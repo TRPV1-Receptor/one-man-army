@@ -10,9 +10,10 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import android.view.Menu
 import android.view.MenuItem
+import androidx.fragment.app.Fragment
 import com.example.onemanarmy.databinding.ActivityMainBinding
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), FragmentNavigation  {
 
 
 
@@ -23,5 +24,16 @@ class MainActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction()
             .add(R.id.container,LoginFragment())
             .commit()
+    }
+
+    override fun navigateFrag(fragment: Fragment, addToStack: Boolean) {
+        val transaction = supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.container, fragment)
+
+        if(addToStack){
+            transaction.addToBackStack(null)
+        }
+        transaction.commit()
     }
 }
