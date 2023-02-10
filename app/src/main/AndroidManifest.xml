@@ -12,6 +12,11 @@
         android:theme="@style/Theme.OneManArmy"
         tools:targetApi="31">
         <activity
+            android:name=".OwnerDashboard"
+            android:exported="false"
+            android:label="@string/title_activity_owner_dashboard"
+            android:theme="@style/Theme.OneManArmy.NoActionBar" />
+        <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
