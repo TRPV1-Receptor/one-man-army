@@ -12,6 +12,21 @@
         android:theme="@style/Theme.OneManArmy"
         tools:targetApi="31">
         <activity
+            android:name=".SettingsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AccountActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ReceiptCreatorActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DocScannerActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AppointmentActivity"
+            android:exported="false" />
+        <activity
             android:name=".OwnerDashboard"
             android:exported="false"
             android:label="@string/title_activity_owner_dashboard"
