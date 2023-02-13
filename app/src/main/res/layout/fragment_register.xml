@@ -83,6 +83,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_login_reg"
+                android:textColor="#A2C872"
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -92,6 +93,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_register_reg"
+                android:backgroundTint="#A2C872"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Register"
