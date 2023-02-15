@@ -15,6 +15,7 @@
         android:orientation="horizontal"
         android:gravity="center">
         <androidx.cardview.widget.CardView
+            android:id="@+id/appointments"
             android:layout_width="160dp"
             android:layout_height="190dp"
             android:layout_margin="10dp"
@@ -54,6 +55,7 @@
 
         </androidx.cardview.widget.CardView>
         <androidx.cardview.widget.CardView
+            android:id="@+id/documentscanner"
             android:layout_width="160dp"
             android:layout_height="190dp"
             android:layout_margin="10dp"
@@ -102,6 +104,7 @@
         android:orientation="horizontal"
         android:gravity="center">
         <androidx.cardview.widget.CardView
+            android:id="@+id/receiptcreator"
             android:layout_width="160dp"
             android:layout_height="190dp"
             android:layout_margin="10dp"
@@ -141,6 +144,7 @@
 
         </androidx.cardview.widget.CardView>
         <androidx.cardview.widget.CardView
+            android:id="@+id/account"
             android:layout_width="160dp"
             android:layout_height="190dp"
             android:layout_margin="10dp"
@@ -188,6 +192,7 @@
         android:orientation="horizontal"
         android:gravity="center">
         <androidx.cardview.widget.CardView
+        android:id="@+id/unknown"
         android:layout_width="160dp"
         android:layout_height="190dp"
         android:layout_margin="10dp"
@@ -227,6 +232,7 @@
 
     </androidx.cardview.widget.CardView>
         <androidx.cardview.widget.CardView
+            android:id="@+id/settings"
             android:layout_width="160dp"
             android:layout_height="190dp"
             android:layout_margin="10dp"

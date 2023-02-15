@@ -10,6 +10,7 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Button
 import androidx.fragment.app.Fragment
 import com.example.onemanarmy.databinding.ActivityMainBinding
 
@@ -24,6 +25,12 @@ class MainActivity : AppCompatActivity(), FragmentNavigation  {
         supportFragmentManager.beginTransaction()
             .add(R.id.container,LoginFragment())
             .commit()
+
+
+
+
+
+
     }
 
     override fun navigateFrag(fragment: Fragment, addToStack: Boolean) {
