@@ -10,7 +10,10 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.appcompat.widget.ButtonBarLayout
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -26,6 +29,7 @@ class RegisterFragment : Fragment() {
     private lateinit var username: EditText
     private lateinit var password: EditText
     private lateinit var cnfPassword: EditText
+    private lateinit var fAuth: FirebaseAuth
 
     // TODO: Rename and change types of parameters
     private var param1: String? = null
@@ -49,6 +53,7 @@ class RegisterFragment : Fragment() {
         username = view.findViewById(R.id.reg_username)
         password = view.findViewById(R.id.reg_password)
         cnfPassword = view.findViewById(R.id.reg_cnf_password)
+        fAuth = Firebase.auth
 
 
         view.findViewById<Button>(R.id.btn_login_reg).setOnClickListener {
@@ -62,6 +67,19 @@ class RegisterFragment : Fragment() {
 
         return view
 
+    }
+
+    private fun firebaseSignUp(){
+        fAuth.createUserWithEmailAndPassword(username.text.toString(),
+            password.text.toString()).addOnCompleteListener{
+            task ->
+            if(task.isSuccessful){
+                Toast.makeText(context, "Register Successful", Toast.LENGTH_SHORT).show()
+
+            }else{
+                Toast.makeText(context,task.exception?.message,Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     private fun validateEmptyForm(){
@@ -89,6 +107,7 @@ class RegisterFragment : Fragment() {
 
                      if(password.text.toString() == cnfPassword.text.toString()){
 
+                        firebaseSignUp()
                          Toast.makeText(context,"Registration Successful", Toast.LENGTH_SHORT).show()
                      }
                      else{
