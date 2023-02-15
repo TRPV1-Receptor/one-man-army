@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "784379494142",
+    "project_id": "uni-projects-85c9d",
+    "storage_bucket": "uni-projects-85c9d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:784379494142:android:c38bc2a7cdad1f315cafaf",
+        "android_client_info": {
+          "package_name": "com.example.onemanarmy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "784379494142-ldcl31heqg394r7rv7erv15d0osu26t0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDZZp_Ntd-6JV_mWLTm6nu-Rqn4pEXB21U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "784379494142-ldcl31heqg394r7rv7erv15d0osu26t0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

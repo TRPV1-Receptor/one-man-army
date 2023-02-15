@@ -19,11 +19,11 @@
             android:text="Test Button" />
 
         <ImageView
-            android:layout_width="70dp"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
+            android:layout_width="131dp"
+            android:layout_height="138dp"
             android:layout_marginTop="90dp"
-            android:src="@drawable/onemanarmylogo"/>
+            android:adjustViewBounds="true"
+            android:src="@drawable/onemanarmylogo" />
 
 
     <com.google.android.material.textfield.TextInputLayout
@@ -75,6 +75,7 @@
 
          <com.google.android.material.button.MaterialButton
              android:id="@+id/btn_login"
+             android:backgroundTint="#A2C872"
              android:layout_width="wrap_content"
              android:layout_height="wrap_content"
              android:text="Login"
@@ -83,6 +84,7 @@
 
          <com.google.android.material.button.MaterialButton
              android:id="@+id/btn_register"
+             android:textColor="#A2C872"
              style="@style/Widget.MaterialComponents.Button.TextButton"
              android:layout_width="wrap_content"
              android:layout_height="wrap_content"
