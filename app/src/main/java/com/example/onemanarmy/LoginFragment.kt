@@ -25,6 +25,7 @@ import androidx.navigation.fragment.findNavController
 class LoginFragment : Fragment() {
     private lateinit var username: EditText
     private lateinit var password: EditText
+    
 
 
 
@@ -32,6 +33,7 @@ class LoginFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
+
 
 
 
