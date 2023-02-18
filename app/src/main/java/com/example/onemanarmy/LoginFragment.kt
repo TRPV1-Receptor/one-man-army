@@ -85,12 +85,12 @@ class LoginFragment : Fragment() {
             username.text.toString().isNotEmpty() &&
                     password.text.toString().isNotEmpty() ->
             {
-                if(username.text.toString().matches(Regex("123456"))){
+                if(username.text.toString().matches(Regex("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"))){
 
                 Toast.makeText(context, "Login Successful", Toast.LENGTH_SHORT).show()
 
 
-                }else{
+                } else{
                     username.setError("Please Enter Valid Email Id",icon)
                 }
             }
