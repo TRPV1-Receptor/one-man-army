@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
@@ -28,6 +29,12 @@ class ReceiptCreatorActivity : AppCompatActivity() {
         adapter = ReceiptAdapter(mutableListOf(ReceiptItem("",0.0)))
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this)
+
+        val backButton = findViewById<ImageView>(R.id.back)
+
+        backButton.setOnClickListener {
+            finish()
+        }
 
         val addButton = findViewById<Button>(R.id.addButton)
         addButton.setOnClickListener {
