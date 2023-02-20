@@ -118,9 +118,9 @@ class RegisterFragment : Fragment() {
                       password.setError("Please Enter at least 5 characters",icon)
                   }
 
-                }else{
-                    username.setError("Please Enter Valid Email Id",icon)
-                }
+                }//else{
+                 //   username.setError("Please Enter Valid Email Id",icon)
+                //}
             }
         }
     }

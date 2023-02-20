@@ -25,20 +25,10 @@ import androidx.navigation.fragment.findNavController
 class LoginFragment : Fragment() {
     private lateinit var username: EditText
     private lateinit var password: EditText
-    
-
-
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-
-
-
-
-
-
 
     ): View? {
         // Inflate the layout for this fragment
@@ -46,16 +36,6 @@ class LoginFragment : Fragment() {
 
         username = view.findViewById(R.id.log_username)
         password = view.findViewById(R.id.log_password)
-
-        //This is a test button to bypass the login screen into the owner dashboard -Elias
-        val btnopen = view.findViewById<Button>(R.id.test)
-        btnopen.setOnClickListener {
-            requireActivity().run {
-                startActivity(Intent(this, OwnerDashboard::class.java))
-                finish()
-            }
-        }
-
 
         view.findViewById<Button>(R.id.btn_register).setOnClickListener {
             var navRegister = activity as FragmentNavigation
@@ -75,6 +55,15 @@ class LoginFragment : Fragment() {
         val icon = AppCompatResources.getDrawable(requireContext(),
             R.drawable.errorsymbol)
 
+        //Admin account bypass
+        val admin = listOf("Elias", "Anthony", "Austin", "Alejandro", "Michael", "Deidre")
+        if (username.text.toString() in admin){
+            requireActivity().run {
+                startActivity(Intent(this, OwnerDashboard::class.java))
+                finish()
+            }
+        }
+
         icon?.setBounds(0,0, icon.intrinsicWidth,icon.intrinsicHeight)
         when{
             TextUtils.isEmpty(username.text.toString().trim())->{
@@ -91,9 +80,11 @@ class LoginFragment : Fragment() {
 
                 Toast.makeText(context, "Login Successful", Toast.LENGTH_SHORT).show()
 
+                    //The commented out lines are causing the text in the username box to
+                    //disappear after pressing login  -Elias
 
-                } else{
-                    username.setError("Please Enter Valid Email Id",icon)
+                }   //else{
+                    //username.setError("Please Enter Valid Email Id",icon)
                 }
             }
         }
@@ -102,4 +93,4 @@ class LoginFragment : Fragment() {
 
 
 
-}
+//}
