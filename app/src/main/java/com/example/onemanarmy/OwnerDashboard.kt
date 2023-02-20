@@ -21,6 +21,8 @@ class OwnerDashboard : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.owner_dashboard)
 
+
+
         val aptButton = findViewById<CardView>(R.id.appointments)
         aptButton.setOnClickListener(View.OnClickListener {
             val intent = Intent(this, AppointmentActivity::class.java,)
