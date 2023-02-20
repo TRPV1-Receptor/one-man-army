@@ -43,6 +43,15 @@ class LoginFragment : Fragment() {
 
         }
 
+        val btnopen = view.findViewById<Button>(R.id.test)
+        btnopen.setOnClickListener {
+            requireActivity().run {
+                startActivity(Intent(this, OwnerDashboard::class.java))
+                finish()
+            }
+        }
+
+
         view.findViewById<Button>(R.id.btn_login).setOnClickListener {
             validateForm()
         }
