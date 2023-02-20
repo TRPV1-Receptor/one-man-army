@@ -2,4 +2,13 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+
+
+    <!--Dre's color for settings(Its only a template and will change)-->
+    <color name="primary">#3DDC84</color>
+    <color name="night_mode">#023020</color>
+    <color name="notfications">#FFFF00</color>
+    <color name="private_account">#FFD700</color>
+    <color name="security">#FF0000 </color>
 </resources>
