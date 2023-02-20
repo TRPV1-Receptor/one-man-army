@@ -69,17 +69,25 @@ class RegisterFragment : Fragment() {
 
     }
 
-    private fun firebaseSignUp(){
-        fAuth.createUserWithEmailAndPassword(username.text.toString(),
-            password.text.toString()).addOnCompleteListener{
-            task ->
-            if(task.isSuccessful){
-                Toast.makeText(context, "Register Successful", Toast.LENGTH_SHORT).show()
+    private fun firebaseSignUp() {
+        val user = hashMapOf(
+            "username" to username.text.toString().trim(),
+            "password" to password.text.toString().trim(),
+            "cnfPassword" to cnfPassword.text.toString().trim()
+        )
 
-            }else{
-                Toast.makeText(context,task.exception?.message,Toast.LENGTH_SHORT).show()
+        fAuth.createUserWithEmailAndPassword(username.text.toString(), password.text.toString())
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Toast.makeText(context, "Register Successful", Toast.LENGTH_SHORT).show()
+                    val bundle = Bundle()
+                    bundle.putSerializable("user", user)
+                    val navRegister = activity as FragmentNavigation
+                    navRegister.navigateFrag(LoginFragment(), false)
+                } else {
+                    Toast.makeText(context, task.exception?.message, Toast.LENGTH_SHORT).show()
+                }
             }
-        }
     }
 
     private fun validateEmptyForm(){
@@ -102,7 +110,7 @@ class RegisterFragment : Fragment() {
                     password.text.toString().isNotEmpty() &&
                     cnfPassword.text.toString().isNotEmpty() ->
             {
-                if(username.text.toString().matches(Regex("123456"))){
+                if(username.text.toString().matches(Regex("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"))){
                  if(password.text.toString().length>=5) {
 
                      if(password.text.toString() == cnfPassword.text.toString()){
