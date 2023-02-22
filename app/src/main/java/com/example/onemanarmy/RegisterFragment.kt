@@ -90,6 +90,7 @@ class RegisterFragment : Fragment() {
             }
     }
 
+
     private fun validateEmptyForm(){
         val icon = AppCompatResources.getDrawable(requireContext(),
         R.drawable.errorsymbol)

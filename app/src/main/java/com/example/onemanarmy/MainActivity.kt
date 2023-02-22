@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment
 import android.content.Intent
 import android.widget.RadioButton
 import android.widget.RadioGroup
+import com.google.firebase.FirebaseApp
 
 
 class MainActivity : AppCompatActivity(), FragmentNavigation  {
@@ -22,7 +23,8 @@ class MainActivity : AppCompatActivity(), FragmentNavigation  {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-       super.onCreate(savedInstanceState)
+        super.onCreate(savedInstanceState)
+        FirebaseApp.initializeApp(this);
         setContentView(R.layout.activity_main)
 
         supportFragmentManager.beginTransaction()
