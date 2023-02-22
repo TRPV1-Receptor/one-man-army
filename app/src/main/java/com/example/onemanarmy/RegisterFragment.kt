@@ -29,7 +29,7 @@ class RegisterFragment : Fragment() {
     private lateinit var username: EditText
     private lateinit var password: EditText
     private lateinit var cnfPassword: EditText
-    private lateinit var fAuth: FirebaseAuth
+    private lateinit var auth: FirebaseAuth
 
     // TODO: Rename and change types of parameters
     private var param1: String? = null
@@ -53,7 +53,7 @@ class RegisterFragment : Fragment() {
         username = view.findViewById(R.id.reg_username)
         password = view.findViewById(R.id.reg_password)
         cnfPassword = view.findViewById(R.id.reg_cnf_password)
-        fAuth = Firebase.auth
+        auth = FirebaseAuth.getInstance()
 
 
         view.findViewById<Button>(R.id.btn_login_reg).setOnClickListener {
@@ -76,7 +76,7 @@ class RegisterFragment : Fragment() {
             "cnfPassword" to cnfPassword.text.toString().trim()
         )
 
-        fAuth.createUserWithEmailAndPassword(username.text.toString(), password.text.toString())
+        auth.createUserWithEmailAndPassword(username.text.toString(), password.text.toString())
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     Toast.makeText(context, "Register Successful", Toast.LENGTH_SHORT).show()

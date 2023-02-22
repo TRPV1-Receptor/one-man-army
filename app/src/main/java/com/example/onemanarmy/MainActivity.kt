@@ -19,7 +19,7 @@ import android.widget.RadioGroup
 
 class MainActivity : AppCompatActivity(), FragmentNavigation  {
 
-
+    
 
     override fun onCreate(savedInstanceState: Bundle?) {
        super.onCreate(savedInstanceState)
@@ -51,6 +51,7 @@ class MainActivity : AppCompatActivity(), FragmentNavigation  {
             }
         }
     }
+
 
 
 
