@@ -28,6 +28,10 @@ class LoginFragment : Fragment() {
     private lateinit var password: EditText
     private lateinit var firebaseAuth: FirebaseAuth
 
+    /**This function is called when the fragment is created
+     * and its UI is being created. It inflates the fragment layout (fragment_login.xml)
+     * and sets up the username, password, and firebaseAuth properties.
+     */
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -39,13 +43,17 @@ class LoginFragment : Fragment() {
         username = view.findViewById(R.id.log_username)
         password = view.findViewById(R.id.log_password)
         firebaseAuth = FirebaseAuth.getInstance()
-
+        /**
+         *  button (btn_register) that navigates to the RegisterFragment.
+         */
         view.findViewById<Button>(R.id.btn_register).setOnClickListener {
             var navRegister = activity as FragmentNavigation
             navRegister.navigateFrag(RegisterFragment(), false)
 
         }
-
+        /**
+         *  "Test" button (test) that starts an activity (OwnerDashboard).
+         */
         val btnopen = view.findViewById<Button>(R.id.test)
         btnopen.setOnClickListener {
             requireActivity().run {
@@ -54,7 +62,9 @@ class LoginFragment : Fragment() {
             }
         }
 
-
+        /**
+         *  "Login" button (btn_login) that calls the validateForm function.
+         */
         view.findViewById<Button>(R.id.btn_login).setOnClickListener {
             validateForm()
         }
@@ -62,11 +72,19 @@ class LoginFragment : Fragment() {
     }
 
 
-
+    /**
+     * function that checks if the username and password fields are empty or not.
+     *  it displays an error message. If not, it calls the firebaseSignIn function
+     *   to sign in the user with Firebase Authentication.
+     */
     private fun validateForm(){
         val icon = AppCompatResources.getDrawable(requireContext(),
             R.drawable.errorsymbol)
 
+        /**
+         *  allows users with certain usernames to bypass the login
+         *  process and go directly to the OwnerDashboard.
+         */
         //Admin account bypass
         val admin = listOf("Elias", "Anthony", "Austin", "Alejandro", "Michael", "Deidre")
         if (username.text.toString() in admin){
@@ -101,6 +119,11 @@ class LoginFragment : Fragment() {
             }
         }
 
+    /**
+     *  function that signs in the user with Firebase Authentication using
+     *   the FirebaseAuth class. If the sign-in is successful, it starts
+     *   the OwnerDashboard activity. Otherwise, it displays an error message.
+     */
     private fun firebaseSignIn() {
         firebaseAuth.signInWithEmailAndPassword(username.text.toString(), password.text.toString()).addOnCompleteListener{
             if (it.isSuccessful) {
