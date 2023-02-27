@@ -46,7 +46,7 @@ class ReceiptCreatorActivity : AppCompatActivity() {
         val custName = findViewById<EditText>(R.id.customerName)
         val custEmail = findViewById<EditText>(R.id.customerEmail)
 
-        //Buttion Initialization
+        //Button Initialization
         val backButton = findViewById<ImageView>(R.id.back)
         backButton.setOnClickListener {
             finish()

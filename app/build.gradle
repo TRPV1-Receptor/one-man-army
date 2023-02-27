@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.onemanarmy"
-        minSdk 24
+        minSdk 23
         targetSdk 33
         versionCode 1
         versionName "1.0"
@@ -61,4 +61,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-storage-ktx'
     implementation 'com.google.firebase:firebase-auth-ktx'
     implementation 'com.google.firebase:firebase-database-ktx'
+
+    //Camera Dependency
+    //implementation 'com.github.kuamanet:android-document-scanner:Tag'
 }
