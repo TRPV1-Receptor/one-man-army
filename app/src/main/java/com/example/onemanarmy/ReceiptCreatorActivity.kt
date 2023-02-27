@@ -129,7 +129,7 @@ class ReceiptCreatorActivity : AppCompatActivity() {
 
             //Permission Handling for External Storage
             if (!receiptList.isNullOrEmpty()) {
-                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+                if (Build.VERSION.SDK_INT > 24) {
                     if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
                         val permission = arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
                         requestPermissions(permission, storageCode)
@@ -219,6 +219,7 @@ class ReceiptCreatorActivity : AppCompatActivity() {
 
         }catch (e: Exception){
             Log.d("Exception", e.toString())
+            receiptList.clear()
             Toast.makeText(this,""+ e.toString(), Toast.LENGTH_SHORT).show()
         }
     }
