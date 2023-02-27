@@ -68,13 +68,13 @@ class LoginFragment : Fragment() {
             R.drawable.errorsymbol)
 
         //Admin account bypass
-        val admin = listOf("Elias", "Anthony", "Austin", "Alejandro", "Michael", "Deidre")
-        if (username.text.toString() in admin){
-            requireActivity().run {
-                startActivity(Intent(this, OwnerDashboard::class.java))
-                finish()
-            }
-        }
+        //val admin = listOf("Elias", "Anthony", "Austin", "Alejandro", "Michael", "Deidre")
+       // if (username.text.toString() in admin){
+          //  requireActivity().run {
+               // startActivity(Intent(this, OwnerDashboard::class.java))
+               // finish()
+           // }
+       // }
 
         icon?.setBounds(0,0, icon.intrinsicWidth,icon.intrinsicHeight)
         when{
@@ -88,14 +88,17 @@ class LoginFragment : Fragment() {
             username.text.toString().isNotEmpty() &&
                     password.text.toString().isNotEmpty() ->
             {
-                if(username.text.toString().matches(Regex("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"))){
-                firebaseSignIn()
-                Toast.makeText(context, "Login Successful", Toast.LENGTH_SHORT).show()
+                if(username.text.toString().matches(Regex("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"))) {
+                    firebaseSignIn()
+                    Toast.makeText(context, "Login Successful", Toast.LENGTH_SHORT).show()
+                }
+                else{
+                    Toast.makeText(context,"Please use email format", Toast.LENGTH_SHORT).show()
+                }
 
                     //The commented out lines are causing the text in the username box to
                     //disappear after pressing login  -Elias
-
-                }   //else{
+                  //else{
                     //username.setError("Please Enter Valid Email Id",icon)
                 }
             }

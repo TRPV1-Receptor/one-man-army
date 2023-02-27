@@ -1,9 +1,10 @@
 package com.example.onemanarmy
 
-import android.content.ContentProvider
-import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,21 +12,26 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
-import androidx.core.content.FileProvider
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.get
+import androidx.core.view.iterator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.itextpdf.text.Document
-import com.itextpdf.text.Paragraph
+import com.itextpdf.text.*
+import com.itextpdf.text.pdf.PdfPTable
 import com.itextpdf.text.pdf.PdfWriter
-import java.io.File
 import java.io.FileOutputStream
-import java.lang.reflect.Parameter
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class ReceiptCreatorActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: ReceiptAdapter
     var receiptList = mutableListOf<ReceiptItem>()
+    var receiptListCount = 0
+    private val storageCode = 1001
+    var image = "app/src/main/res/drawable/onemanarmylogo.png"
 
 
 
@@ -33,7 +39,7 @@ class ReceiptCreatorActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_receipt_creator)
 
-        receiptList.add(ReceiptItem("",0.0))
+        //receiptList.add(ReceiptItem("",0.0))
         recyclerView = findViewById(R.id.recyclerView)
         adapter = ReceiptAdapter(mutableListOf(ReceiptItem("",0.0)))
         recyclerView.adapter = adapter
@@ -46,103 +52,203 @@ class ReceiptCreatorActivity : AppCompatActivity() {
         val custName = findViewById<EditText>(R.id.customerName)
         val custEmail = findViewById<EditText>(R.id.customerEmail)
 
-        //Buttion Initialization
+
+        //Button Initialization
         val backButton = findViewById<ImageView>(R.id.back)
         backButton.setOnClickListener {
             finish()
         }
 
+        //checks if text boxes are empty before adding another one
         val addButton = findViewById<Button>(R.id.addButton)
         addButton.setOnClickListener {
-            adapter.addItem()
+            val service = recyclerView[receiptListCount].findViewById<EditText>(R.id.serviceProvidedEditText)
+            val cost = recyclerView[receiptListCount].findViewById<EditText>(R.id.costEditText)
+
+            if(service.text.toString().isNullOrEmpty()){
+                service.error = "Required Field"
+            }else if (cost.text.toString().isNullOrEmpty()){
+                cost.error = "Required Field"
+            } else {
+                receiptListCount++
+                adapter.addItem()
+            }
+
 
         }
 
+        //removes the most recent service added and updates the list count
         val removeButton = findViewById<Button>(R.id.removeButton)
         removeButton.setOnClickListener {
             if(adapter.itemCount == 1){
                 Toast.makeText(applicationContext,text,duration).show()
             }
             else{
+                receiptListCount--
                 adapter.removeItem()
             }
         }
 
+
+        // Error handling, Populates ReceiptList with receipt items based on info in edit texts
         val createButton = findViewById<Button>(R.id.createButton)
         createButton.setOnClickListener {
-
-            var bool = true
 
             val email = custEmail.text.toString()
             val name = custName.text.toString()
 
-            //Make sure name is filled out
-            if(custName!!.length() == 0){
+            if (custName!!.length() == 0)
+            {
                 custName.error = "This field is required."
-                bool = false
             }
-
-            //Make sure email format is correct
-            if(!emailRegex.matches(email)){
+            if(!emailRegex.matches(email))
+            {
                 custEmail.error = "Please enter valid email."
-                bool = false
             }
-
-            //Make sure Email is filled out
-            if(custEmail!!.length() == 0){
+            if (custEmail.length() == 0)
+            {
                 custEmail.error = "This field is required."
-                bool = false
+            }
+            for(item in recyclerView){
+                //If any text boxes are empty will notify user to fill them all in.
+                if(item.findViewById<EditText>(R.id.serviceProvidedEditText).text.toString().isNullOrEmpty()
+                    || item.findViewById<EditText>(R.id.costEditText).text.toString().isNullOrEmpty())
+                {
+                    Toast.makeText(applicationContext,"Please fill in all fields", duration).show()
+                    receiptList.clear()
+                    break
+                }
+                //Puts the info into receipt item objects and populates Receipt List
+                receiptList.add(ReceiptItem(item.findViewById<EditText>(R.id.serviceProvidedEditText).text.toString(),item.findViewById<EditText>(R.id.costEditText).text.toString().toDouble()))
+
+                Log.d("Service",item.findViewById<EditText>(R.id.serviceProvidedEditText).text.toString())
+                Log.d("Cost",item.findViewById<EditText>(R.id.costEditText).text.toString())
+            }
+            receiptList.add(ReceiptItem(name,0.0))
+            receiptList.add(ReceiptItem(email,0.0))
+
+            //Permission Handling for External Storage
+            if (!receiptList.isNullOrEmpty()) {
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+                    if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+                        val permission = arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        requestPermissions(permission, storageCode)
+                    } else {
+                        savePDF()
+                    }
+                } else {
+                    savePDF()
+                }
+            }
+        }
+
+    }
+    private fun savePDF(){
+        val email = receiptList.removeLast().serviceProvided
+        val name = receiptList.removeLast().serviceProvided
+
+
+        val cFileName = SimpleDateFormat("MMddyyyy_HHmmss", Locale.getDefault())
+            .format(System.currentTimeMillis())
+        val cFilePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() + "/" + cFileName + ".pdf"
+
+
+        val cReceipt = Document()
+
+
+        try {
+            PdfWriter.getInstance(cReceipt,FileOutputStream(cFilePath))
+            cReceipt.open()
+
+            val t = Paragraph()
+            val table = PdfPTable(2)
+
+            t.alignment = Element.ALIGN_LEFT
+            val titleChunk = Chunk("Receipt", Font(Font.FontFamily.TIMES_ROMAN,24.0f, Font.BOLD))
+
+            // TODO("Business Information needs to be grabbed from the Users Account")
+            val from = Phrase("FROM", Font(Font.FontFamily.TIMES_ROMAN,12f,Font.BOLD.and(Font.UNDERLINE)))
+            val to = Phrase("TO", Font(Font.FontFamily.TIMES_ROMAN,12f,Font.BOLD.and(Font.UNDERLINE)))
+
+            val busChunk = Chunk(" Business Name \n Business Email\n Business Phone \n Date: ${SimpleDateFormat("MM/dd/yyy",Locale.getDefault()).format(System.currentTimeMillis())}")
+            val cusChunk = Chunk(" Customer Name\n Customer Email")
+
+            t.add(titleChunk)
+            t.add("\n\n")
+
+            t.add(from)
+            t.add("\n")
+
+            t.add(busChunk)
+            t.add("\n\n")
+
+            t.add(to)
+            t.add("\n")
+
+            t.add(cusChunk)
+            t.add("\n\n\n")
+
+            cReceipt.add(t)
+
+            table.defaultCell.verticalAlignment = Element.ALIGN_CENTER
+            table.defaultCell.horizontalAlignment = Element.ALIGN_CENTER
+
+            table.addCell(Phrase("Service Done",Font(Font.FontFamily.TIMES_ROMAN,20.0f)))
+            table.addCell(Phrase("Cost", Font(Font.FontFamily.TIMES_ROMAN,20.0f)))
+
+            table.defaultCell.verticalAlignment = Element.ALIGN_LEFT
+            table.defaultCell.horizontalAlignment = Element.ALIGN_LEFT
+
+            var totalCost = 0.0
+
+            for(item in receiptList){
+                totalCost += item.cost
+                table.addCell(Phrase(item.serviceProvided, Font(Font.FontFamily.TIMES_ROMAN,18.0f)))
+                table.addCell(Phrase(item.cost.toString(),Font(Font.FontFamily.TIMES_ROMAN,18.0f)))
             }
 
-            if(bool){
 
-                val fileName = "${name}_receipt.pdf"
-                val filePath = "${getExternalFilesDir(null)}/${fileName}"
-                var totalCost = 0.0
+            table.addCell(Phrase("Total Cost", Font(Font.FontFamily.TIMES_ROMAN,18.0f,Font.BOLD)))
+            table.addCell(Phrase(totalCost.toString(), Font(Font.FontFamily.TIMES_ROMAN,18.0f,Font.BOLD)))
 
-                val document = Document()
-                PdfWriter.getInstance(document, FileOutputStream(filePath))
-                document.open()
+            cReceipt.add(table)
 
-                document.add(Paragraph("Customer Name: $custName"))
+            cReceipt.close()
 
-                for(item in receiptList){
-                    document.add(Paragraph(item.serviceProvided + "\t\t\t" + item.cost))
-                    totalCost += item.cost
+            Toast.makeText(this,"$cReceipt.pdf\n is created to \n$cFilePath",Toast.LENGTH_SHORT).show()
+
+        }catch (e: Exception){
+            Log.d("Exception", e.toString())
+            Toast.makeText(this,""+ e.toString(), Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    //Permission Handling
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when(requestCode){
+            storageCode -> {
+                if (grantResults.isNotEmpty() && grantResults[0]==PackageManager.PERMISSION_GRANTED){
+                    savePDF()
+                }else{
+                    Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show()
                 }
-
-                document.add(Paragraph("Total Cost: $totalCost"))
-
-                document.close()
-                sendEmail(filePath, email)
-
             }
         }
     }
 
-    private fun sendEmail(filePath:String, custEmail:String){
-        val file = File(filePath)
-        val uri = FileProvider.getUriForFile(this, "${applicationContext.packageName}.provider", file)
 
-        val emailIntent = Intent(Intent.ACTION_SEND)
-        emailIntent.type = "application/pdf"
-        emailIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf(custEmail))
-        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Receipt for your transaction!")
-        emailIntent.putExtra(Intent.EXTRA_TEXT, "Dear Customer, Please find attached your receipt for the transaction. Best regards, Your Business.")
-        emailIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        emailIntent.putExtra(Intent.EXTRA_STREAM, uri)
 
-        startActivity(Intent.createChooser(emailIntent, "Send Email"))
-    }
-}
+}//End of AppCompatActivity
 
-data class ReceiptItem(val serviceProvided:String, var cost:Double)
+data class ReceiptItem(var serviceProvided:String, var cost:Double)
 
 class ReceiptAdapter(private val items: MutableList<ReceiptItem>) : RecyclerView.Adapter<ReceiptAdapter.ReceiptViewHolder>(){
 
     class ReceiptViewHolder(itemView:View) : RecyclerView.ViewHolder(itemView){
         val serviceProvidedEditText: EditText = itemView.findViewById(R.id.serviceProvidedEditText)
         val costEditText: EditText = itemView.findViewById(R.id.costEditText)
+
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReceiptViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_receipt, parent, false)
@@ -152,7 +258,7 @@ class ReceiptAdapter(private val items: MutableList<ReceiptItem>) : RecyclerView
     override fun onBindViewHolder(holder: ReceiptViewHolder, position: Int) {
         val item = items[position]
         holder.serviceProvidedEditText.setText(item.serviceProvided)
-
+        holder.costEditText.setText("")
     }
 
     override fun getItemCount() = items.size
@@ -167,5 +273,6 @@ class ReceiptAdapter(private val items: MutableList<ReceiptItem>) : RecyclerView
         items.removeLast()
         notifyItemRemoved(items.size)
     }
+
 }
 
