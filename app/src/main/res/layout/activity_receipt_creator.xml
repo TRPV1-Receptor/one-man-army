@@ -50,8 +50,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
+        app:layout_constraintTop_toTopOf="parent"
+        android:text="Elias Hazboun"/>
+    <!--Must Remove this After Testing!-->
     <EditText
         android:id="@+id/customerEmail"
         android:layout_width="wrap_content"
@@ -67,7 +68,8 @@
         android:paddingEnd="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:text="hazbounelias96@gmail.com"/>
 
 
     <Button

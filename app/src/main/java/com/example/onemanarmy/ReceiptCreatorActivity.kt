@@ -1,6 +1,11 @@
 package com.example.onemanarmy
 
+import android.Manifest.permission.READ_EXTERNAL_STORAGE
+import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
+import android.graphics.*
+import android.graphics.pdf.PdfDocument
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
@@ -13,14 +18,15 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.get
 import androidx.core.view.iterator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.itextpdf.text.*
-import com.itextpdf.text.pdf.PdfPTable
-import com.itextpdf.text.pdf.PdfWriter
+import java.io.File
 import java.io.FileOutputStream
+import java.lang.reflect.Type
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -28,30 +34,35 @@ import java.util.*
 class ReceiptCreatorActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: ReceiptAdapter
+
     var receiptList = mutableListOf<ReceiptItem>()
     var receiptListCount = 0
-    private val storageCode = 1001
-    var image = "app/src/main/res/drawable/onemanarmylogo.png"
 
+    lateinit var bmp:Bitmap
+    lateinit var scaledbmp:Bitmap
 
+    private var PERMISSION_CODE = 101
 
+    val text = "Must provide atleast one service!"
+    private val duration = Toast.LENGTH_SHORT
+    private val emailRegex = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}\$".toRegex()
+
+    @SuppressLint("ObsoleteSdkInt")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_receipt_creator)
 
-        //receiptList.add(ReceiptItem("",0.0))
+        bmp = BitmapFactory.decodeResource(resources,R.drawable.onemanarmylogo)
+        scaledbmp = Bitmap.createScaledBitmap(bmp, 140, 140, false)
+
+
         recyclerView = findViewById(R.id.recyclerView)
         adapter = ReceiptAdapter(mutableListOf(ReceiptItem("",0.0)))
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        val text = "Must provide atleast one service!"
-        val duration = Toast.LENGTH_SHORT
-        val emailRegex = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}\$".toRegex()
-
         val custName = findViewById<EditText>(R.id.customerName)
         val custEmail = findViewById<EditText>(R.id.customerEmail)
-
 
         //Button Initialization
         val backButton = findViewById<ImageView>(R.id.back)
@@ -65,16 +76,14 @@ class ReceiptCreatorActivity : AppCompatActivity() {
             val service = recyclerView[receiptListCount].findViewById<EditText>(R.id.serviceProvidedEditText)
             val cost = recyclerView[receiptListCount].findViewById<EditText>(R.id.costEditText)
 
-            if(service.text.toString().isNullOrEmpty()){
+            if(service.text.toString().isEmpty()){
                 service.error = "Required Field"
-            }else if (cost.text.toString().isNullOrEmpty()){
+            }else if (cost.text.toString().isEmpty()){
                 cost.error = "Required Field"
             } else {
                 receiptListCount++
                 adapter.addItem()
             }
-
-
         }
 
         //removes the most recent service added and updates the list count
@@ -88,7 +97,6 @@ class ReceiptCreatorActivity : AppCompatActivity() {
                 adapter.removeItem()
             }
         }
-
 
         // Error handling, Populates ReceiptList with receipt items based on info in edit texts
         val createButton = findViewById<Button>(R.id.createButton)
@@ -109,10 +117,11 @@ class ReceiptCreatorActivity : AppCompatActivity() {
             {
                 custEmail.error = "This field is required."
             }
-            for(item in recyclerView){
+            for(item in recyclerView)
+            {//start for
                 //If any text boxes are empty will notify user to fill them all in.
-                if(item.findViewById<EditText>(R.id.serviceProvidedEditText).text.toString().isNullOrEmpty()
-                    || item.findViewById<EditText>(R.id.costEditText).text.toString().isNullOrEmpty())
+                if(item.findViewById<EditText>(R.id.serviceProvidedEditText).text.toString().isEmpty()
+                    || item.findViewById<EditText>(R.id.costEditText).text.toString().isEmpty())
                 {
                     Toast.makeText(applicationContext,"Please fill in all fields", duration).show()
                     receiptList.clear()
@@ -121,121 +130,204 @@ class ReceiptCreatorActivity : AppCompatActivity() {
                 //Puts the info into receipt item objects and populates Receipt List
                 receiptList.add(ReceiptItem(item.findViewById<EditText>(R.id.serviceProvidedEditText).text.toString(),item.findViewById<EditText>(R.id.costEditText).text.toString().toDouble()))
 
-                Log.d("Service",item.findViewById<EditText>(R.id.serviceProvidedEditText).text.toString())
-                Log.d("Cost",item.findViewById<EditText>(R.id.costEditText).text.toString())
-            }
+                //Log.d("Service",item.findViewById<EditText>(R.id.serviceProvidedEditText).text.toString())
+                //Log.d("Cost",item.findViewById<EditText>(R.id.costEditText).text.toString())
+
+            }//end for
+
+            //Adding name and email as receipt objects for the purpose of accessing them in savepdf
             receiptList.add(ReceiptItem(name,0.0))
             receiptList.add(ReceiptItem(email,0.0))
 
             //Permission Handling for External Storage
-            if (!receiptList.isNullOrEmpty()) {
-                if (Build.VERSION.SDK_INT > 24) {
-                    if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
-                        val permission = arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        requestPermissions(permission, storageCode)
-                    } else {
-                        savePDF()
-                    }
-                } else {
+            if (checkPermissions()){
+                Toast.makeText(this,"Permission Granted IF", duration)
+            }else{
+                requestPermission()
+            }
+
+
+            if (receiptList.isNotEmpty()) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                     savePDF()
                 }
             }
         }
 
     }
+
     private fun savePDF(){
-        val email = receiptList.removeLast().serviceProvided
-        val name = receiptList.removeLast().serviceProvided
+        var name = receiptList.removeLast().serviceProvided
+        var email = receiptList.removeLast().serviceProvided
+
+        var pageHeight = 1120
+        var pageWidth = 792
+
+        var curTime = SimpleDateFormat("MMddyyyy_HHmmss", Locale.getDefault()).format(System.currentTimeMillis())
+        var date = SimpleDateFormat("MM-dd-yyyy",Locale.getDefault()).format(System.currentTimeMillis())
+
+        var pdfDocument = PdfDocument()
+        var paint = Paint()
+        var title = Paint()
+
+        var myPageInfo = PdfDocument.PageInfo.Builder(pageWidth,pageHeight,1).create()
+
+        var myPage = pdfDocument.startPage(myPageInfo)
+
+        var canvas = myPage.canvas
+
+        canvas.drawBitmap(scaledbmp,30F,30F,paint)
+
+        title.typeface = Typeface.create(Typeface.DEFAULT,Typeface.NORMAL)
+        title.textSize = 30F
+        title.color = ContextCompat.getColor(this,R.color.black)
+        title.textAlign = Paint.Align.CENTER
+
+        canvas.drawText("OneManArmy Receipt",400F,80F,title)
 
 
-        val cFileName = SimpleDateFormat("MMddyyyy_HHmmss", Locale.getDefault())
-            .format(System.currentTimeMillis())
-        val cFilePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() + "/" + cFileName + ".pdf"
+        title.typeface = Typeface.defaultFromStyle(Typeface.NORMAL)
+        title.textSize = 15F
+        title.color = ContextCompat.getColor(this,R.color.Black)
+        title.textAlign = Paint.Align.CENTER
+
+        canvas.drawText("Thank you for using OneManArmy!",400F,105F,title)
+
+        paint.strokeWidth = 1F
+        paint.color = ContextCompat.getColor(this, R.color.Navy)
+        paint.color = ContextCompat.getColor(this,R.color.black)
+
+        canvas.drawLine(360F,220F,440F,220F,paint)
+        canvas.drawText(date,370F,215F,paint)
 
 
-        val cReceipt = Document()
+        title.typeface = Typeface.create(Typeface.DEFAULT,Typeface.NORMAL)
+        title.textSize = 18F
+        title.color = ContextCompat.getColor(this,R.color.black)
+        title.textAlign = Paint.Align.LEFT
 
+        canvas.drawText("Company Name",40F,200F,paint)
+        canvas.drawText("123 Main Street",40F,220F,paint)
+        canvas.drawText("Greenville, NC 27858",40F,240F,paint)
+        canvas.drawText("(321) 456-7890",40F,260F,paint)
+        canvas.drawText("Email Address",40F,280F,paint)
+        canvas.drawLine(300F,320F,500F,320F,paint)
+
+        title.typeface = Typeface.create(Typeface.DEFAULT,Typeface.BOLD)
+        canvas.drawText("BILL TO",380F,315F,title)
+        title.typeface = Typeface.create(Typeface.DEFAULT,Typeface.NORMAL)
+
+        canvas.drawText("Customer Name",360F,335F,paint)
+        canvas.drawText("Customer Email",360F,355F,paint)
+        canvas.drawText("(321) 456-7890",360F,375F,paint)
+
+        canvas.drawLine(40F,400F,740F,400F,paint)
+        canvas.drawLine(40F,500F,740F,500F,paint)
+
+        title.textAlign = Paint.Align.LEFT
+        title.textSize = 50F
+        canvas.drawText("Receipt Total",40F,470F,title)
+
+        title.textSize = 20F
+        title.textAlign = Paint.Align.LEFT
+
+        title.typeface = Typeface.create(Typeface.DEFAULT,Typeface.BOLD)
+        canvas.drawText("Item",40F,540F,title)
+        title.typeface = Typeface.create(Typeface.DEFAULT,Typeface.NORMAL)
+
+        title.textAlign = Paint.Align.RIGHT
+        title.typeface = Typeface.create(Typeface.DEFAULT,Typeface.BOLD)
+        canvas.drawText("Amount",740F,540F,title)
+        title.typeface = Typeface.create(Typeface.DEFAULT,Typeface.NORMAL)
+
+
+
+        var yCoord = 575F
+        val itemXcoord = 40F
+        val ammountXcoord = 740F
+        var totalCost = 0.0
+
+
+        for(item in receiptList){
+            totalCost += item.cost
+            title.textAlign = Paint.Align.LEFT
+            canvas.drawText(item.serviceProvided,itemXcoord,yCoord,title)
+            title.textAlign = Paint.Align.RIGHT
+            canvas.drawText("$" + item.cost.toString(),ammountXcoord,yCoord,title)
+            yCoord += 35F
+        }
+
+        var totalYcoord = yCoord+70F
+        title.textAlign = Paint.Align.RIGHT
+        title.textSize = 50F
+        canvas.drawText("$${totalCost}",740F,470F,title)
+
+        title.textAlign = Paint.Align.RIGHT
+        title.textSize = 20F
+        canvas.drawText("Total:",550F,totalYcoord,title)
+        title.textAlign = Paint.Align.RIGHT
+        canvas.drawText("$${totalCost}",ammountXcoord,totalYcoord,title)
+
+
+
+        pdfDocument.finishPage(myPage)
+
+        val file = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS.toString()),"Test${curTime}.PDF")
 
         try {
-            PdfWriter.getInstance(cReceipt,FileOutputStream(cFilePath))
-            cReceipt.open()
-
-            val t = Paragraph()
-            val table = PdfPTable(2)
-
-            t.alignment = Element.ALIGN_LEFT
-            val titleChunk = Chunk("Receipt", Font(Font.FontFamily.TIMES_ROMAN,24.0f, Font.BOLD))
-
-            // TODO("Business Information needs to be grabbed from the Users Account")
-            val from = Phrase("FROM", Font(Font.FontFamily.TIMES_ROMAN,12f,Font.BOLD.and(Font.UNDERLINE)))
-            val to = Phrase("TO", Font(Font.FontFamily.TIMES_ROMAN,12f,Font.BOLD.and(Font.UNDERLINE)))
-
-            val busChunk = Chunk(" Business Name \n Business Email\n Business Phone \n Date: ${SimpleDateFormat("MM/dd/yyy",Locale.getDefault()).format(System.currentTimeMillis())}")
-            val cusChunk = Chunk(" Customer Name\n Customer Email")
-
-            t.add(titleChunk)
-            t.add("\n\n")
-
-            t.add(from)
-            t.add("\n")
-
-            t.add(busChunk)
-            t.add("\n\n")
-
-            t.add(to)
-            t.add("\n")
-
-            t.add(cusChunk)
-            t.add("\n\n\n")
-
-            cReceipt.add(t)
-
-            table.defaultCell.verticalAlignment = Element.ALIGN_CENTER
-            table.defaultCell.horizontalAlignment = Element.ALIGN_CENTER
-
-            table.addCell(Phrase("Service Done",Font(Font.FontFamily.TIMES_ROMAN,20.0f)))
-            table.addCell(Phrase("Cost", Font(Font.FontFamily.TIMES_ROMAN,20.0f)))
-
-            table.defaultCell.verticalAlignment = Element.ALIGN_LEFT
-            table.defaultCell.horizontalAlignment = Element.ALIGN_LEFT
-
-            var totalCost = 0.0
-
-            for(item in receiptList){
-                totalCost += item.cost
-                table.addCell(Phrase(item.serviceProvided, Font(Font.FontFamily.TIMES_ROMAN,18.0f)))
-                table.addCell(Phrase(item.cost.toString(),Font(Font.FontFamily.TIMES_ROMAN,18.0f)))
-            }
-
-
-            table.addCell(Phrase("Total Cost", Font(Font.FontFamily.TIMES_ROMAN,18.0f,Font.BOLD)))
-            table.addCell(Phrase(totalCost.toString(), Font(Font.FontFamily.TIMES_ROMAN,18.0f,Font.BOLD)))
-
-            cReceipt.add(table)
-
-            cReceipt.close()
-
-            Toast.makeText(this,"$cReceipt.pdf\n is created to \n$cFilePath",Toast.LENGTH_SHORT).show()
-
-        }catch (e: Exception){
-            Log.d("Exception", e.toString())
-            receiptList.clear()
-            Toast.makeText(this,""+ e.toString(), Toast.LENGTH_SHORT).show()
+            pdfDocument.writeTo(FileOutputStream(file))
+            Toast.makeText(this,"PDF Generated!",duration).show()
+        }catch (e:Exception){
+            e.printStackTrace()
+            Toast.makeText(this,"Oops, something went wrong.",duration).show()
         }
+        pdfDocument.close()
     }
 
+    private fun checkPermissions(): Boolean{
+
+        var writeStoragePermission = ContextCompat.checkSelfPermission(
+            applicationContext,
+            WRITE_EXTERNAL_STORAGE
+        )
+
+        var readStoragePermission = ContextCompat.checkSelfPermission(
+            applicationContext,
+            READ_EXTERNAL_STORAGE
+        )
+
+        return writeStoragePermission == PackageManager.PERMISSION_GRANTED
+                && readStoragePermission == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun requestPermission(){
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE),PERMISSION_CODE
+        )
+    }
+
+
     //Permission Handling
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when(requestCode){
-            storageCode -> {
-                if (grantResults.isNotEmpty() && grantResults[0]==PackageManager.PERMISSION_GRANTED){
-                    savePDF()
+
+        if (requestCode == PERMISSION_CODE){
+            if(grantResults.isNotEmpty()){
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED
+                    &&grantResults[1]==PackageManager.PERMISSION_GRANTED){
+                    Toast.makeText(this,"Permission Granted",duration).show()
                 }else{
-                    Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this,"Permission Denied",duration).show()
+                    finish()
                 }
             }
         }
+
     }
 
 
