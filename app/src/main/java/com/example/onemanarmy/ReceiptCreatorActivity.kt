@@ -9,6 +9,8 @@ import android.graphics.pdf.PdfDocument
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -26,7 +28,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import java.io.File
 import java.io.FileOutputStream
-import java.lang.reflect.Type
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -73,15 +74,14 @@ class ReceiptCreatorActivity : AppCompatActivity() {
         //checks if text boxes are empty before adding another one
         val addButton = findViewById<Button>(R.id.addButton)
         addButton.setOnClickListener {
-            val service = recyclerView[receiptListCount].findViewById<EditText>(R.id.serviceProvidedEditText)
-            val cost = recyclerView[receiptListCount].findViewById<EditText>(R.id.costEditText)
-
+            val service = recyclerView[(recyclerView.layoutManager as LinearLayoutManager).childCount-1].findViewById<EditText>(R.id.serviceProvidedEditText)
+            val cost = recyclerView[(recyclerView.layoutManager as LinearLayoutManager).childCount-1].findViewById<EditText>(R.id.costEditText)
             if(service.text.toString().isEmpty()){
                 service.error = "Required Field"
             }else if (cost.text.toString().isEmpty()){
                 cost.error = "Required Field"
             } else {
-                receiptListCount++
+                receiptList.add(ReceiptItem(service.text.toString(),cost.text.toString().toDouble()))
                 adapter.addItem()
             }
         }
@@ -93,7 +93,7 @@ class ReceiptCreatorActivity : AppCompatActivity() {
                 Toast.makeText(applicationContext,text,duration).show()
             }
             else{
-                receiptListCount--
+                receiptList.removeLast()
                 adapter.removeItem()
             }
         }
@@ -117,51 +117,51 @@ class ReceiptCreatorActivity : AppCompatActivity() {
             {
                 custEmail.error = "This field is required."
             }
-            for(item in recyclerView)
-            {//start for
-                //If any text boxes are empty will notify user to fill them all in.
-                if(item.findViewById<EditText>(R.id.serviceProvidedEditText).text.toString().isEmpty()
-                    || item.findViewById<EditText>(R.id.costEditText).text.toString().isEmpty())
-                {
-                    Toast.makeText(applicationContext,"Please fill in all fields", duration).show()
-                    receiptList.clear()
-                    break
-                }
-                //Puts the info into receipt item objects and populates Receipt List
-                receiptList.add(ReceiptItem(item.findViewById<EditText>(R.id.serviceProvidedEditText).text.toString(),item.findViewById<EditText>(R.id.costEditText).text.toString().toDouble()))
-
-                //Log.d("Service",item.findViewById<EditText>(R.id.serviceProvidedEditText).text.toString())
-                //Log.d("Cost",item.findViewById<EditText>(R.id.costEditText).text.toString())
-
-            }//end for
-
-            //Adding name and email as receipt objects for the purpose of accessing them in savepdf
-            receiptList.add(ReceiptItem(name,0.0))
-            receiptList.add(ReceiptItem(email,0.0))
-
-            //Permission Handling for External Storage
-            if (checkPermissions()){
-                Toast.makeText(this,"Permission Granted IF", duration)
+            //Checking for empty fields
+            if(checkAll()){
+                Toast.makeText(applicationContext, "Please fill in all fields", duration).show()
             }else{
-                requestPermission()
-            }
+                //Permission Handling for External Storage
+                if (checkPermissions()){
+                    Toast.makeText(this,"Permission Granted IF", duration).show()
+                }else{
+                    requestPermission()
+                }
 
+                //Adding name and email as receipt objects for the purpose of accessing them in savepdf
+                receiptList = adapter.getItems()
+                receiptList.add(ReceiptItem(name,0.0))
+                receiptList.add(ReceiptItem(email,0.0))
 
-            if (receiptList.isNotEmpty()) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    savePDF()
+                if (adapter.itemCount!=0) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        savePDF()
+                        adapter.clear()
+                    }
                 }
             }
         }
-
     }
+    //Function to check text boxes
+    private fun checkAll():Boolean{
+        for(item in recyclerView) {
+            if (item.findViewById<EditText>(R.id.serviceProvidedEditText).text.toString().isEmpty()
+                || item.findViewById<EditText>(R.id.costEditText).text.toString().isEmpty())
+            {
+                return true
+            }
+        }
+        return false
+    }
+
 
     private fun savePDF(){
         var name = receiptList.removeLast().serviceProvided
         var email = receiptList.removeLast().serviceProvided
 
-        var pageHeight = 1120
-        var pageWidth = 792
+
+        val pageHeight = 1120
+        val pageWidth = 792
 
         var curTime = SimpleDateFormat("MMddyyyy_HHmmss", Locale.getDefault()).format(System.currentTimeMillis())
         var date = SimpleDateFormat("MM-dd-yyyy",Locale.getDefault()).format(System.currentTimeMillis())
@@ -193,9 +193,13 @@ class ReceiptCreatorActivity : AppCompatActivity() {
 
         canvas.drawText("Thank you for using OneManArmy!",400F,105F,title)
 
-        paint.strokeWidth = 1F
+        paint.strokeWidth = 40F
         paint.color = ContextCompat.getColor(this, R.color.Navy)
+        canvas.drawLine(0F,0F,792F,0F,paint)
+        canvas.drawLine(0F,1120F,792F,1120F,paint)
         paint.color = ContextCompat.getColor(this,R.color.black)
+        paint.strokeWidth = 1F
+
 
         canvas.drawLine(360F,220F,440F,220F,paint)
         canvas.drawText(date,370F,215F,paint)
@@ -217,8 +221,8 @@ class ReceiptCreatorActivity : AppCompatActivity() {
         canvas.drawText("BILL TO",380F,315F,title)
         title.typeface = Typeface.create(Typeface.DEFAULT,Typeface.NORMAL)
 
-        canvas.drawText("Customer Name",360F,335F,paint)
-        canvas.drawText("Customer Email",360F,355F,paint)
+        canvas.drawText("$name",360F,355F,paint)
+        canvas.drawText("$email",360F,335F,paint)
         canvas.drawText("(321) 456-7890",360F,375F,paint)
 
         canvas.drawLine(40F,400F,740F,400F,paint)
@@ -239,7 +243,6 @@ class ReceiptCreatorActivity : AppCompatActivity() {
         title.typeface = Typeface.create(Typeface.DEFAULT,Typeface.BOLD)
         canvas.drawText("Amount",740F,540F,title)
         title.typeface = Typeface.create(Typeface.DEFAULT,Typeface.NORMAL)
-
 
 
         var yCoord = 575F
@@ -339,7 +342,7 @@ data class ReceiptItem(var serviceProvided:String, var cost:Double)
 class ReceiptAdapter(private val items: MutableList<ReceiptItem>) : RecyclerView.Adapter<ReceiptAdapter.ReceiptViewHolder>(){
 
     class ReceiptViewHolder(itemView:View) : RecyclerView.ViewHolder(itemView){
-        val serviceProvidedEditText: EditText = itemView.findViewById(R.id.serviceProvidedEditText)
+        var serviceProvidedEditText: EditText = itemView.findViewById(R.id.serviceProvidedEditText)
         val costEditText: EditText = itemView.findViewById(R.id.costEditText)
 
     }
@@ -350,22 +353,65 @@ class ReceiptAdapter(private val items: MutableList<ReceiptItem>) : RecyclerView
 
     override fun onBindViewHolder(holder: ReceiptViewHolder, position: Int) {
         val item = items[position]
-        holder.serviceProvidedEditText.setText(item.serviceProvided)
         holder.costEditText.setText("")
+        holder.serviceProvidedEditText.setText("")
+
+        holder.costEditText.addTextChangedListener(object :TextWatcher{
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+                if (p0.toString().isNotEmpty()){
+                    item.cost = p0.toString().toDouble()
+                }
+            }
+        })
+
+        holder.serviceProvidedEditText.addTextChangedListener(object :TextWatcher{
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun afterTextChanged(p0: Editable?) {
+                item.serviceProvided = p0.toString()
+            }
+        })
     }
 
     override fun getItemCount() = items.size
 
+    fun getItems():MutableList<ReceiptItem>{
+        var list = mutableListOf<ReceiptItem>()
+        for(item in items){
+            Log.d("Service Provided",item.serviceProvided)
+            Log.d("Cost", item.cost.toString())
+            val add = ReceiptItem(item.serviceProvided,item.cost)
+            list.add(add)
+        }
+        return list
+    }
 
-    fun addItem(){
-        items.add(ReceiptItem("",0.0))
+
+    fun addItem(service:String=""){
+        items.add(ReceiptItem(service,0.0))
         notifyItemInserted(items.size -1)
     }
 
-    fun removeItem(){
-        items.removeLast()
+    fun removeItem():ReceiptItem{
+        val item = items.removeLast()
         notifyItemRemoved(items.size)
+        return item
     }
 
-}
+    fun clear(){
+        items.clear()
+        notifyDataSetChanged()
+        items.add(ReceiptItem("",0.0))
+        notifyItemInserted(items.size -1)
 
+    }
+}
