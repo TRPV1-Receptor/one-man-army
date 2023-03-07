@@ -81,18 +81,7 @@ class LoginFragment : Fragment() {
         val icon = AppCompatResources.getDrawable(requireContext(),
             R.drawable.errorsymbol)
 
-        /**
-         *  allows users with certain usernames to bypass the login
-         *  process and go directly to the OwnerDashboard.
-         */
-        //Admin account bypass
-        //val admin = listOf("Elias", "Anthony", "Austin", "Alejandro", "Michael", "Deidre")
-       // if (username.text.toString() in admin){
-          //  requireActivity().run {
-               // startActivity(Intent(this, OwnerDashboard::class.java))
-               // finish()
-           // }
-       // }
+
 
         icon?.setBounds(0,0, icon.intrinsicWidth,icon.intrinsicHeight)
         when{
