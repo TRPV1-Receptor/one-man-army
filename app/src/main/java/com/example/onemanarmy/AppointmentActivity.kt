@@ -28,21 +28,15 @@ class AppointmentActivity : AppCompatActivity() {
                 calendar.selectedDate?.year.toString()
     }
 
-
-
     private fun openPopUp() {
 
         val builder = AlertDialog.Builder(this)
         val popUpView = layoutInflater.inflate(R.layout.add_appointment_popup, null)
         val date = popUpView.findViewById<TextView>(R.id.date)
+        val timepicker = popUpView.findViewById<TimePicker>(R.id.timePicker)
+
         date.text =getDate(calendar)
         builder.setView(popUpView)
-
-
-
-
-
-
 
         builder.setPositiveButton("Cancel"){dialog, _ ->
             dialog.dismiss()
@@ -53,10 +47,15 @@ class AppointmentActivity : AppCompatActivity() {
             val customerCity = popUpView.findViewById<EditText>(R.id.customerCity).text.toString()
             val customerStreet = popUpView.findViewById<EditText>(R.id.customerStreet).text.toString()
             val customerZip = popUpView.findViewById<EditText>(R.id.customerZip).text.toString()
+            val hour = timepicker.hour.toString()
+            val minute = timepicker.minute.toString()
+            val time = "$hour:$minute"
+            val address = "$customerName\n$customerStreet\n$customerCity,$customerZip"
 
-            val timepicker = popUpView.findViewById<TimePicker>(R.id.timePicker)
+            val appt = Appointment(customerName,time,customerName,address,calendar.selectedDate)
 
-
+            appointmentList.add(appt)
+            adapter.addItem(appt)
 
             dialog.dismiss()
         }
@@ -79,15 +78,15 @@ class AppointmentActivity : AppCompatActivity() {
 
         val addBtn = findViewById<FloatingActionButton>(R.id.addAppointment)
         addBtn.setOnClickListener{
-            Toast.makeText(this,calendar.currentDate.toString(),Toast.LENGTH_LONG).show()
-            openPopUp()
+                Toast.makeText(this,calendar.currentDate.toString(),Toast.LENGTH_LONG).show()
+                openPopUp()
+            }
         }
     }
-}
+
 data class Appointment(
     var title:String = "",
-    var startTime:Int= 0,
-    var endTime:Int=0,
+    var startTime:String = "",
     var customerName:String="",
     var customerAddress:String="",
     var date: CalendarDay? =null)
@@ -104,13 +103,13 @@ class AppointmentAdapter(private val items:MutableList<Appointment>) : RecyclerV
 
     override fun onBindViewHolder(holder: AppointmentViewHolder, position: Int) {
         val item = items[position]
-        holder.appointmentTitle.text = "Appointment Slot"
+        holder.appointmentTitle.text = item.title
     }
 
     override fun getItemCount() = items.size
 
-    fun addItem(){
-        items.add(Appointment("Fuck Me"))
+    fun addItem(appointment: Appointment){
+        items.add(appointment)
         notifyItemInserted(items.size-1)
     }
 
