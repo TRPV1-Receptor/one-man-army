@@ -43,6 +43,11 @@ class RegisterFragment : Fragment() {
         }
     }
 
+    /**
+     * It inflates the layout for the fragment and initializes the necessary views and variables
+     *  such as username, password, cnfPassword, and auth.
+     *  It also sets click listeners for the login and register buttons
+     */
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -69,6 +74,9 @@ class RegisterFragment : Fragment() {
 
     }
 
+    /**
+     * allowing users to sign up using their email address and password.
+     */
     private fun firebaseSignUp() {
         val user = hashMapOf(
             "username" to username.text.toString().trim(),
@@ -90,7 +98,9 @@ class RegisterFragment : Fragment() {
             }
     }
 
-
+    /**
+     *  logic to ensure that the user enters valid input values before registering their account
+     */
     private fun validateEmptyForm(){
         val icon = AppCompatResources.getDrawable(requireContext(),
         R.drawable.errorsymbol)

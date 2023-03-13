@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.onemanarmy"
-        minSdk 24
+        minSdk 23
         targetSdk 33
         versionCode 1
         versionName "1.0"
@@ -54,6 +54,15 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     api 'com.google.android.material:material:1.8.0'
 
+    //Additions
+    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.8.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+
     // Import the BoM for the Firebase platform
     implementation platform('com.google.firebase:firebase-bom:31.2.2')
 
@@ -61,4 +70,20 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-storage-ktx'
     implementation 'com.google.firebase:firebase-auth-ktx'
+    implementation 'com.google.firebase:firebase-database-ktx'
+
+    //CameraX Dependencies
+    def camerax_version = "1.1.0-beta01"
+    implementation "androidx.camera:camera-core:${camerax_version}"
+    implementation "androidx.camera:camera-camera2:${camerax_version}"
+    implementation "androidx.camera:camera-lifecycle:${camerax_version}"
+    implementation "androidx.camera:camera-video:${camerax_version}"
+
+    implementation "androidx.camera:camera-view:${camerax_version}"
+    implementation "androidx.camera:camera-extensions:${camerax_version}"
+
+    //Calendar Dependencies
+    def version = "1.6.0"
+    implementation "com.github.prolificinteractive:material-calendarview:2.0.0"
+
 }
