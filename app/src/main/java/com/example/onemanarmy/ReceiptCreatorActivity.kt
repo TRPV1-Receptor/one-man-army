@@ -37,7 +37,6 @@ class ReceiptCreatorActivity : AppCompatActivity() {
     private lateinit var adapter: ReceiptAdapter
 
     var receiptList = mutableListOf<ReceiptItem>()
-    var receiptListCount = 0
 
     lateinit var bmp:Bitmap
     lateinit var scaledbmp:Bitmap
@@ -153,7 +152,6 @@ class ReceiptCreatorActivity : AppCompatActivity() {
         }
         return false
     }
-
 
     private fun savePDF(){
         var name = receiptList.removeLast().serviceProvided
