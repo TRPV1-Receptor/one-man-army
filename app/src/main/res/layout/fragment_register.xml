@@ -102,7 +102,6 @@
                 android:text="Register"
                 android:layout_toStartOf="@id/btn_login_reg"
                 android:layout_marginEnd="40dp"/>
-
         </RelativeLayout>
     </LinearLayout>
 </ScrollView>
