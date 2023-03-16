@@ -1,5 +1,6 @@
 package com.example.onemanarmy
 
+import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,9 +13,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView
-import com.prolificinteractive.materialcalendarview.OnDateSelectedListener
 
-class AppointmentActivity : AppCompatActivity(),OnDateSelectedListener{
+class AppointmentActivity : AppCompatActivity(){
 
     private lateinit var recyclerView:RecyclerView
     private lateinit var adapter:AppointmentAdapter
@@ -31,39 +31,76 @@ class AppointmentActivity : AppCompatActivity(),OnDateSelectedListener{
                 calendar.selectedDate?.year.toString()
     }
 
-    private fun openPopUp() {
-        //Opening the popup and grabbing references to items on it
-        val builder = AlertDialog.Builder(this)
-        val popUpView = layoutInflater.inflate(R.layout.add_appointment_popup, null)
-        val date = popUpView.findViewById<TextView>(R.id.date)
-        val timepicker = popUpView.findViewById<TimePicker>(R.id.timePicker)
+    @SuppressLint("SetTextI18n")
+    private fun openPopUp(type : String, appt : Appointment = Appointment()) {
 
-        //Placing pretty date on bottom of it.
-        date.text =getDate(calendar)
-        builder.setView(popUpView)
+        if (type == "add"){
+            //Opening the popup and grabbing references to items on it
+            val builder = AlertDialog.Builder(this)
+            val popUpView = layoutInflater.inflate(R.layout.add_appointment_popup, null)
+            val date = popUpView.findViewById<TextView>(R.id.date)
+            val timepicker = popUpView.findViewById<TimePicker>(R.id.timePicker)
 
-        builder.setPositiveButton("Cancel"){dialog, _ ->
-            dialog.dismiss()
+            //Placing pretty date on bottom of it.
+            date.text =getDate(calendar)
+            builder.setView(popUpView)
+
+            builder.setPositiveButton("Cancel"){dialog, _ ->
+                dialog.dismiss()
+            }
+            //Grabs all info from fields, makes an appointment object out of it, adds to
+            builder.setNegativeButton("Create"){ _, _ ->
+                val selectedDate = calendar.selectedDate
+                val customerName = popUpView.findViewById<EditText>(R.id.customerName).text.toString()
+                val customerCity = popUpView.findViewById<EditText>(R.id.customerCity).text.toString()
+                val customerStreet = popUpView.findViewById<EditText>(R.id.customerStreet).text.toString()
+                val customerZip = popUpView.findViewById<EditText>(R.id.customerZip).text.toString()
+
+                val time = getTime(timepicker.hour,timepicker.minute)
+                val address = "$customerStreet\n$customerCity,$customerZip"
+
+                val appt = Appointment(customerName,time,customerName,address,selectedDate)
+                appointmentList.add(appt)
+
+                calendar.addDecorators(selectedDate?.let {
+                    CurrentDayDecorator(this@AppointmentActivity,
+                        it
+                    )
+                })
+                updateData(appt.date)
+            }
+            builder.create().show()
+        }else{
+            val builder = AlertDialog.Builder(this)
+            val popUpView = layoutInflater.inflate(R.layout.appointment_popup,null)
+
+            val customerName = popUpView.findViewById<TextView>(R.id.appointmentName)
+            customerName.text = getString(R.string.appointment_cust_name_popup).uppercase()+ appt.customerName
+
+            val customerAddress = popUpView.findViewById<TextView>(R.id.appointmentAddress)
+            customerAddress.text = "ADDRESS\n" + appt.customerAddress
+
+            val customerDate = popUpView.findViewById<TextView>(R.id.appointmentDate)
+            customerDate.text = "DATE\n" +
+                                appt.date?.month.toString() + "/"+
+                                appt.date?.day.toString() + "/" +
+                                appt.date?.year.toString()
+
+            val appointmentTime = popUpView.findViewById<TextView>(R.id.appointmentTime)
+            appointmentTime.text = "TIME\n" + appt.startTime
+
+            builder.setView(popUpView)
+
+            builder.setPositiveButton("Cancel"){dialog, _ ->
+                dialog.dismiss()
+            }
+
+            builder.setNegativeButton("Cancel"){dialog, _ ->
+                dialog.dismiss()
+            }
+            builder.create().show()
         }
-        //Grabs all info from fields, makes an appointment object out of it, adds to
-        builder.setNegativeButton("Create"){ _, _ ->
-            val selectedDate = calendar.selectedDate
-            val customerName = popUpView.findViewById<EditText>(R.id.customerName).text.toString()
-            val customerCity = popUpView.findViewById<EditText>(R.id.customerCity).text.toString()
-            val customerStreet = popUpView.findViewById<EditText>(R.id.customerStreet).text.toString()
-            val customerZip = popUpView.findViewById<EditText>(R.id.customerZip).text.toString()
-            val hour = timepicker.hour.toString()
-            val minute = timepicker.minute.toString()
-            val time = "$hour:$minute"
-            val address = "$customerName\n$customerStreet\n$customerCity,$customerZip"
 
-            val appt = Appointment(customerName,time,customerName,address,selectedDate)
-            appointmentList.add(appt)
-
-            updateData(appt.date)
-
-        }
-        builder.create().show()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,9 +111,17 @@ class AppointmentActivity : AppCompatActivity(),OnDateSelectedListener{
         calendar = findViewById(R.id.calendarView)
         recyclerView = findViewById(R.id.apptRecycler)
 
+
+
         //Initializing the adapter and the layout manager
         adapter = AppointmentAdapter(mutableListOf(Appointment()))
         recyclerView.adapter = adapter
+        adapter.setOnItemClickListener(object : AppointmentAdapter.onItemClickListener{
+            override fun onItemClick(position: Int) {
+                val apppointment = adapter.getItem(position)
+                openPopUp("hi",apppointment)
+            }
+        })
         recyclerView.layoutManager = LinearLayoutManager(this)
         adapter.clear()
 
@@ -87,7 +132,7 @@ class AppointmentActivity : AppCompatActivity(),OnDateSelectedListener{
 
         val addBtn = findViewById<FloatingActionButton>(R.id.addAppointment)
         addBtn.setOnClickListener{
-                openPopUp()
+                openPopUp("add")
             }
         }
 
@@ -98,13 +143,29 @@ class AppointmentActivity : AppCompatActivity(),OnDateSelectedListener{
         adapter.updateData(filtered)
     }
 
-    override fun onDateSelected(widget: MaterialCalendarView, date: CalendarDay, selected: Boolean) {
-        Toast.makeText(this,"Hello There",Toast.LENGTH_SHORT).show()
-    }
+
 }
 
+fun getTime(hour:Int,minute:Int): String {
 
-
+    if (hour>12){
+        if (minute<10){
+            val newMin = "0$minute"
+            val newHour = hour-12
+            return "$newHour:$newMin PM"
+        }else{
+            val newHour = hour-12
+            return "$newHour:$minute PM"
+        }
+    } else{
+        if (minute < 10){
+            val newMin = "0$minute"
+            return "$hour:$newMin"
+        }else{
+            return "$hour:$minute AM"
+        }
+    }
+}
 data class Appointment(
     var title:String = "",
     var startTime:String = "",
@@ -113,13 +174,27 @@ data class Appointment(
     var date: CalendarDay? =null)
 
 class AppointmentAdapter(private val items:MutableList<Appointment>) : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
-    class AppointmentViewHolder(itemView:View) : RecyclerView.ViewHolder(itemView){
+
+    private lateinit var mListener: onItemClickListener
+    interface onItemClickListener{
+        fun onItemClick(position : Int)
+    }
+    fun setOnItemClickListener(listener: onItemClickListener){
+        mListener = listener
+    }
+    class AppointmentViewHolder(itemView:View, listener: onItemClickListener) : RecyclerView.ViewHolder(itemView){
         var appointmentTitle : TextView = itemView.findViewById(R.id.appointTitle)
+        init {
+            itemView.setOnClickListener{
+                listener.onItemClick(adapterPosition)
+            }
+        }
     }
 
     class EmptyViewHolder(itemView: View):RecyclerView.ViewHolder(itemView){
         var emptyView : TextView = itemView.findViewById(R.id.empty_view_text)
     }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
@@ -129,7 +204,7 @@ class AppointmentAdapter(private val items:MutableList<Appointment>) : RecyclerV
             }
             else ->{
                 val view = LayoutInflater.from(parent.context).inflate(R.layout.item_appointment, parent, false)
-                AppointmentViewHolder(view)
+                AppointmentViewHolder(view,mListener)
             }
         }
     }
@@ -138,15 +213,13 @@ class AppointmentAdapter(private val items:MutableList<Appointment>) : RecyclerV
         when(holder) {
             is AppointmentViewHolder ->{
                 val item = items[position]
-                holder.appointmentTitle.text = item.title
+                holder.appointmentTitle.text = item.title + "\n" + item.startTime
             }
             is EmptyViewHolder ->{
                 holder.emptyView.text ="There are no appointments today"
             }
         }
     }
-
-
 
     override fun getItemViewType(position: Int): Int {
         return if(items.isEmpty()) VIEW_TYPE_EMPTY else VIEW_TYPE_APPOINT
@@ -160,6 +233,7 @@ class AppointmentAdapter(private val items:MutableList<Appointment>) : RecyclerV
         return if(items.isEmpty()) {
             0
         } else {
+
             items.size
         }
     }
@@ -167,7 +241,10 @@ class AppointmentAdapter(private val items:MutableList<Appointment>) : RecyclerV
     fun addItem(appointment: Appointment){
         items.add(appointment)
         notifyItemInserted(items.size-1)
+    }
 
+    fun getItem(position: Int): Appointment {
+        return items[position]
     }
     private fun removeItem(){
         items.removeLast()
