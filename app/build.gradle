@@ -84,5 +84,4 @@ dependencies {
     //Calendar Dependencies
     def version = "1.6.0"
     implementation "com.github.prolificinteractive:material-calendarview:2.0.0"
-
 }
