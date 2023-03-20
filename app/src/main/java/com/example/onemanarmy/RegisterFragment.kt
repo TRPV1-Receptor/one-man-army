@@ -12,6 +12,8 @@ import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
 
 
@@ -30,6 +32,8 @@ class RegisterFragment : Fragment() {
     private lateinit var password: EditText
     private lateinit var cnfPassword: EditText
     private lateinit var auth: FirebaseAuth
+
+    private lateinit var dbRef: DatabaseReference
 
     // TODO: Rename and change types of parameters
     private var param1: String? = null
@@ -59,6 +63,8 @@ class RegisterFragment : Fragment() {
         password = view.findViewById(R.id.reg_password)
         cnfPassword = view.findViewById(R.id.reg_cnf_password)
         auth = FirebaseAuth.getInstance()
+
+        dbRef = FirebaseDatabase.getInstance().getReference("Users")
 
 
         view.findViewById<Button>(R.id.btn_login_reg).setOnClickListener {
@@ -142,6 +148,24 @@ class RegisterFragment : Fragment() {
                 //}
             }
         }
+    }
+
+    private fun saveUserData() {
+
+        //getting values from user input
+        val userName = username.text.toString()
+
+        val userId = dbRef.push().key!!
+
+        val user = UserModel(userId, userName)
+
+        dbRef.child(userId).setValue(user)
+            .addOnCompleteListener{
+                Toast.makeText(context, "Data inserted successfully", Toast.LENGTH_LONG).show()
+            }.addOnFailureListener{ err ->
+                Toast.makeText(context, "Error ${err.message}", Toast.LENGTH_LONG).show()
+            }
+
     }
 
     companion object {
