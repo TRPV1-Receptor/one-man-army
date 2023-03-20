@@ -5,24 +5,17 @@
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:orientation="horizontal"
-    android:paddingTop="10dp"
-    android:paddingBottom="10dp"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp"
-    android:clickable="true"
-    android:focusable="true">
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp"
+    >
     <TextView
-        android:clickable="true"
         android:id="@+id/appointTitle"
         android:layout_width="0dp"
         android:layout_height="60dp"
         android:layout_weight="1"
         android:background="@drawable/rectangle"
-        android:text="Appointment"
-        android:paddingVertical="10dp"
-        android:textSize="32sp"
-        android:textAlignment="center"
-        android:paddingTop="40dp"
-        android:paddingBottom="40dp"
-        android:focusable="true" />
+        android:text="Name Here\n2:00 PM"
+        android:textSize="22sp"
+        android:textAlignment="center">
+    </TextView>
 </LinearLayout>
