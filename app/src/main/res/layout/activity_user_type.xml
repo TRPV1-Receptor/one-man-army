@@ -8,7 +8,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Please select your user type:"
+        android:text="Please select your role:"
         android:textSize="16sp"
         android:layout_marginBottom="16dp"/>
 
@@ -40,6 +40,7 @@
         android:layout_height="wrap_content"
         android:text="Continue"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="32dp"/>
+        android:layout_marginTop="32dp"
+        android:backgroundTint="#A2C872"/>
 
 </LinearLayout>
