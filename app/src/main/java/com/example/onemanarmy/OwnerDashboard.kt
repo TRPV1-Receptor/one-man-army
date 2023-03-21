@@ -3,15 +3,9 @@ package com.example.onemanarmy
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
-import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
 
 
 class OwnerDashboard : AppCompatActivity() {
@@ -20,7 +14,7 @@ class OwnerDashboard : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.dashboard_test)
+        setContentView(R.layout.owner_dashboard)
 
 
 
