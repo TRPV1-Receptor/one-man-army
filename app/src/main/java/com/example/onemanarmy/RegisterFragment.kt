@@ -53,7 +53,7 @@ class RegisterFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_register, container, false)
+        var view = inflater.inflate(R.layout.fragment_register, container, false)
 
         username = view.findViewById(R.id.reg_username)
         password = view.findViewById(R.id.reg_password)
@@ -62,7 +62,7 @@ class RegisterFragment : Fragment() {
 
 
         view.findViewById<Button>(R.id.btn_login_reg).setOnClickListener {
-            val navRegister = activity as FragmentNavigation
+            var navRegister = activity as FragmentNavigation
             navRegister.navigateFrag(LoginFragment(), false)
 
         }
@@ -145,24 +145,22 @@ class RegisterFragment : Fragment() {
     }
 
     companion object {
-// --Commented out by Inspection START (3/14/2023 3:50 PM):
-//        /**
-//         * Use this factory method to create a new instance of
-//         * this fragment using the provided parameters.
-//         *
-//         * @param param1 Parameter 1.
-//         * @param param2 Parameter 2.
-//         * @return A new instance of fragment RegisterFragment.
-//         */
-//        // TODO: Rename and change types and number of parameters
-//        @JvmStatic
-//        fun newInstance(param1: String, param2: String) =
-//            RegisterFragment().apply {
-//                arguments = Bundle().apply {
-//                    putString(ARG_PARAM1, param1)
-//                    putString(ARG_PARAM2, param2)
-//                }
-//            }
-// --Commented out by Inspection STOP (3/14/2023 3:50 PM)
+        /**
+         * Use this factory method to create a new instance of
+         * this fragment using the provided parameters.
+         *
+         * @param param1 Parameter 1.
+         * @param param2 Parameter 2.
+         * @return A new instance of fragment RegisterFragment.
+         */
+        // TODO: Rename and change types and number of parameters
+        @JvmStatic
+        fun newInstance(param1: String, param2: String) =
+            RegisterFragment().apply {
+                arguments = Bundle().apply {
+                    putString(ARG_PARAM1, param1)
+                    putString(ARG_PARAM2, param2)
+                }
+            }
     }
 }

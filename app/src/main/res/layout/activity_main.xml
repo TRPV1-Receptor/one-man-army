@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     android:id='@+id/container'
     android:fitsSystemWindows="true"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:background="?attr/backgroundColor">
 
     <RadioGroup
         android:id="@+id/radioGroup"

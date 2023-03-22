@@ -19,17 +19,24 @@ import android.widget.RadioGroup
 
 class MainActivity : AppCompatActivity(), FragmentNavigation  {
 
+    //Dre - My code for dark mode saver
+    private lateinit var saveData: SaveData
     
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        // Dre - saving module for dark mode
+        saveData = SaveData(this)
+        if (saveData.loadDarkState() == true) {
+            setTheme(R.style.darkTheme)
+        } else
+            setTheme(R.style.AppTheme)
        super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         supportFragmentManager.beginTransaction()
             .add(R.id.container,LoginFragment())
             .commit()
-
-
         // Get the radio group
         val radioGroup = findViewById<RadioGroup>(R.id.radioGroup)
 

@@ -81,6 +81,8 @@ class LoginFragment : Fragment() {
         val icon = AppCompatResources.getDrawable(requireContext(),
             R.drawable.errorsymbol)
 
+
+
         icon?.setBounds(0,0, icon.intrinsicWidth,icon.intrinsicHeight)
         when{
             TextUtils.isEmpty(username.text.toString().trim())->{
