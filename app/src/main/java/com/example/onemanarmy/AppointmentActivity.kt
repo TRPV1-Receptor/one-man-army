@@ -238,7 +238,7 @@ class AppointmentAdapter(private val items:MutableList<Appointment>) : RecyclerV
         }
     }
 
-    fun addItem(appointment: Appointment){
+    private fun addItem(appointment: Appointment){
         items.add(appointment)
         notifyItemInserted(items.size-1)
     }
