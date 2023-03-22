@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:orientation="horizontal"
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp"
+    >
+    <TextView
+        android:id="@+id/appointTitle"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:layout_weight="1"
+        android:background="@drawable/rectangle"
+        android:text="Name Here\n2:00 PM"
+        android:textSize="22sp"
+        android:textAlignment="center">
+    </TextView>
+</LinearLayout>

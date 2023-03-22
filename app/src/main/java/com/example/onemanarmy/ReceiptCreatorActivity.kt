@@ -36,11 +36,7 @@ class ReceiptCreatorActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: ReceiptAdapter
 
-    //Dre - Saved data for dark mode switch
-    private lateinit var saveData: SaveData
-
     var receiptList = mutableListOf<ReceiptItem>()
-    var receiptListCount = 0
 
     lateinit var bmp:Bitmap
     lateinit var scaledbmp:Bitmap
@@ -53,15 +49,6 @@ class ReceiptCreatorActivity : AppCompatActivity() {
 
     @SuppressLint("ObsoleteSdkInt")
     override fun onCreate(savedInstanceState: Bundle?) {
-
-        //Dre - this is data saved for dark mode
-        saveData = SaveData(this)
-        if (saveData.loadDarkState() == true) {
-            setTheme(R.style.darkTheme)
-        } else
-            setTheme(R.style.AppTheme)
-       //***************************
-
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_receipt_creator)
 
@@ -166,7 +153,6 @@ class ReceiptCreatorActivity : AppCompatActivity() {
         return false
     }
 
-
     private fun savePDF(){
         var name = receiptList.removeLast().serviceProvided
         var email = receiptList.removeLast().serviceProvided
@@ -175,18 +161,18 @@ class ReceiptCreatorActivity : AppCompatActivity() {
         val pageHeight = 1120
         val pageWidth = 792
 
-        var curTime = SimpleDateFormat("MMddyyyy_HHmmss", Locale.getDefault()).format(System.currentTimeMillis())
-        var date = SimpleDateFormat("MM-dd-yyyy",Locale.getDefault()).format(System.currentTimeMillis())
+        val curTime = SimpleDateFormat("MMddyyyy_HHmmss", Locale.getDefault()).format(System.currentTimeMillis())
+        val  date = SimpleDateFormat("MM-dd-yyyy",Locale.getDefault()).format(System.currentTimeMillis())
 
-        var pdfDocument = PdfDocument()
-        var paint = Paint()
-        var title = Paint()
+        val pdfDocument = PdfDocument()
+        val paint = Paint()
+        val title = Paint()
 
-        var myPageInfo = PdfDocument.PageInfo.Builder(pageWidth,pageHeight,1).create()
+        val myPageInfo = PdfDocument.PageInfo.Builder(pageWidth,pageHeight,1).create()
 
-        var myPage = pdfDocument.startPage(myPageInfo)
+        val myPage = pdfDocument.startPage(myPageInfo)
 
-        var canvas = myPage.canvas
+        val canvas = myPage.canvas
 
         canvas.drawBitmap(scaledbmp,30F,30F,paint)
 
@@ -233,8 +219,8 @@ class ReceiptCreatorActivity : AppCompatActivity() {
         canvas.drawText("BILL TO",380F,315F,title)
         title.typeface = Typeface.create(Typeface.DEFAULT,Typeface.NORMAL)
 
-        canvas.drawText("$name",360F,355F,paint)
-        canvas.drawText("$email",360F,335F,paint)
+        canvas.drawText(name,360F,355F,paint)
+        canvas.drawText(email,360F,335F,paint)
         canvas.drawText("(321) 456-7890",360F,375F,paint)
 
         canvas.drawLine(40F,400F,740F,400F,paint)
@@ -272,7 +258,7 @@ class ReceiptCreatorActivity : AppCompatActivity() {
             yCoord += 35F
         }
 
-        var totalYcoord = yCoord+70F
+        val totalYcoord = yCoord+70F
         title.textAlign = Paint.Align.RIGHT
         title.textSize = 50F
         canvas.drawText("$${totalCost}",740F,470F,title)
@@ -301,12 +287,12 @@ class ReceiptCreatorActivity : AppCompatActivity() {
 
     private fun checkPermissions(): Boolean{
 
-        var writeStoragePermission = ContextCompat.checkSelfPermission(
+        val writeStoragePermission = ContextCompat.checkSelfPermission(
             applicationContext,
             WRITE_EXTERNAL_STORAGE
         )
 
-        var readStoragePermission = ContextCompat.checkSelfPermission(
+        val readStoragePermission = ContextCompat.checkSelfPermission(
             applicationContext,
             READ_EXTERNAL_STORAGE
         )
@@ -397,7 +383,7 @@ class ReceiptAdapter(private val items: MutableList<ReceiptItem>) : RecyclerView
     override fun getItemCount() = items.size
 
     fun getItems():MutableList<ReceiptItem>{
-        var list = mutableListOf<ReceiptItem>()
+        val list = mutableListOf<ReceiptItem>()
         for(item in items){
             Log.d("Service Provided",item.serviceProvided)
             Log.d("Cost", item.cost.toString())
