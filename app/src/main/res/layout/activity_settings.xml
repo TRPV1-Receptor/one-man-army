@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="?attr/backgroundColor"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    tools:context=".SettingsActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -46,7 +46,7 @@
                 android:layout_height="100dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
-                android:src="@drawable/profile"
+                android:src="@drawable/profile_icon"
                 android:id="@+id/imageView"/>
 
             <TextView
@@ -334,12 +334,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:text="Send us a message"
+                        android:text="Contact us"
                         android:textColor="@color/black"
                         android:textStyle="bold"
                         android:layout_toEndOf="@+id/messageIcon"/>
 
                     <ImageView
+                        android:id="@+id/send_message"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/right_arrow_icon"
@@ -354,8 +355,8 @@
                     android:layout_height="wrap_content">
 
                     <ImageView
-                        android:layout_width="40dp"
                         android:id="@+id/Aboutus"
+                        android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:padding="12dp"
                         android:background="@drawable/round_background_security"

@@ -33,8 +33,9 @@ class SettingsActivity : AppCompatActivity() {
         saveData = SaveData(this)
         if (saveData.loadDarkState() == true) {
             setTheme(R.style.darkTheme)
-        } else
+        } else {
             setTheme(R.style.AppTheme)
+        }
 
         super.onCreate(savedInstanceState)
 
@@ -103,7 +104,7 @@ class SettingsActivity : AppCompatActivity() {
                 restartApplication()
             } else {
                 saveData.setDarkModeState(false)
-                restartApplication()
+               restartApplication()
 
             }
         }
@@ -112,13 +113,13 @@ class SettingsActivity : AppCompatActivity() {
         val backBtn = findViewById<ImageView>(R.id.backBtn)
         backBtn.setOnClickListener { finish() }
         ///////////////////////////////////////////
-//        val secondButton = findViewById<ImageView>(R.id.Aboutus)
-//        secondButton.setOnClickListener{
-//
-//         val Intent = Intent(this,AboutActivity::class.java)
-//        startActivity(Intent)
-//            finish()
-//        }
+        val secondButton = findViewById<View>(R.id.send_message)
+        secondButton.setOnClickListener{
+
+         val Intent = Intent(this,AboutActivity::class.java)
+        startActivity(Intent)
+           //finish()
+        }
 
         ////////////////////////////////////////////
 
@@ -155,7 +156,7 @@ class SettingsActivity : AppCompatActivity() {
 
 
     private fun restartApplication() {
-        val i = Intent(applicationContext, MainActivity::class.java)
+        val i = Intent(applicationContext, SettingsActivity::class.java)
         startActivity(i)
         finish()
     }
