@@ -33,6 +33,7 @@ class RegisterFragment : Fragment() {
     private lateinit var cnfPassword: EditText
     private lateinit var auth: FirebaseAuth
 
+    //DB variable
     private lateinit var dbRef: DatabaseReference
 
     // TODO: Rename and change types of parameters
@@ -62,8 +63,11 @@ class RegisterFragment : Fragment() {
         username = view.findViewById(R.id.reg_username)
         password = view.findViewById(R.id.reg_password)
         cnfPassword = view.findViewById(R.id.reg_cnf_password)
+
+        // Authentication initialize
         auth = FirebaseAuth.getInstance()
 
+        //Initialize db reference
         dbRef = FirebaseDatabase.getInstance().getReference("Users")
 
 
@@ -133,6 +137,7 @@ class RegisterFragment : Fragment() {
                      if(password.text.toString() == cnfPassword.text.toString()){
 
                         firebaseSignUp()
+                         saveUserData()
                          Toast.makeText(context,"Registration Successful", Toast.LENGTH_SHORT).show()
                      }
                      else{
