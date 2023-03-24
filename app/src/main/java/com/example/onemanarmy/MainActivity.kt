@@ -29,6 +29,8 @@ class MainActivity : AppCompatActivity(), FragmentNavigation  {
         supportFragmentManager.beginTransaction()
             .add(R.id.container,LoginFragment())
             .commit()
+
+
         // Get the radio group
         val radioGroup = findViewById<RadioGroup>(R.id.radioGroup)
 

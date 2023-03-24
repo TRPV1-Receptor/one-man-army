@@ -10,9 +10,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
-    <uses-permission
-        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="28" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -25,6 +23,12 @@
         android:theme="@style/Theme.OneManArmy"
         tools:targetApi="31">
         <activity
+            android:name=".UserTypeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AvailabilityAcivity"
+            android:exported="false" />
+        <activity
             android:name=".BusinessRegister"
             android:exported="false" />
         <activity
@@ -33,6 +37,8 @@
         <activity
             android:name=".AccountActivity"
             android:exported="false" />
+        <activity android:name=".AboutActivity"
+            android:exported="false"/>
         <activity
             android:name=".ReceiptCreatorActivity"
             android:exported="false"
