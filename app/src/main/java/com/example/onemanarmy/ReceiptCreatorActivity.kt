@@ -122,21 +122,19 @@ class ReceiptCreatorActivity : AppCompatActivity() {
             }else{
                 //Permission Handling for External Storage
                 if (checkPermissions()){
-                    Toast.makeText(this,"Permission Granted IF", duration).show()
+                    //Adding name and email as receipt objects for the purpose of accessing them in savepdf
+                    receiptList = adapter.getItems()
+                    receiptList.add(ReceiptItem(name,0.0))
+                    receiptList.add(ReceiptItem(email,0.0))
+
+                    if (adapter.itemCount!=0) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                            savePDF()
+                            adapter.clear()
+                        }
+                    }
                 }else{
                     requestPermission()
-                }
-
-                //Adding name and email as receipt objects for the purpose of accessing them in savepdf
-                receiptList = adapter.getItems()
-                receiptList.add(ReceiptItem(name,0.0))
-                receiptList.add(ReceiptItem(email,0.0))
-
-                if (adapter.itemCount!=0) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                        savePDF()
-                        adapter.clear()
-                    }
                 }
             }
         }
@@ -288,12 +286,12 @@ class ReceiptCreatorActivity : AppCompatActivity() {
     private fun checkPermissions(): Boolean{
 
         val writeStoragePermission = ContextCompat.checkSelfPermission(
-            applicationContext,
+            this,
             WRITE_EXTERNAL_STORAGE
         )
 
         val readStoragePermission = ContextCompat.checkSelfPermission(
-            applicationContext,
+            this,
             READ_EXTERNAL_STORAGE
         )
 
@@ -324,16 +322,12 @@ class ReceiptCreatorActivity : AppCompatActivity() {
                     Toast.makeText(this,"Permission Granted",duration).show()
                 }else{
                     Toast.makeText(this,"Permission Denied",duration).show()
-                    finish()
                 }
             }
         }
-
     }
+}
 
-
-
-}//End of AppCompatActivity
 
 data class ReceiptItem(var serviceProvided:String, var cost:Double)
 
