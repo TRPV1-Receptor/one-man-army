@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="skills_array">
+        <item>Java</item>
+        <item>Kotlin</item>
+        <item>Python</item>
+        <item>C++</item>
+        <item>Swift</item>
+        <item>JavaScript</item>
+        <item>HTML/CSS</item>
+        <item>PHP</item>
+        <item>Detailing</item>
+        <item>Pressure Washing</item>
+        <item>Mowing</item>
+        <item>Garden Care</item>
+        <item>Construction</item>
+        <item>Interior Design</item>
+        <item>Accounting</item>
+        <item>Quality Assurance</item>
+        <item>Mechanical Engineering</item>
+        <item>Landscaping</item>
+        <item>Catering</item>
+        <item>Data analyst</item>
+        <item>Software Development</item>
+        <item>Video Game Development</item>
+        <item>Mobile Development</item>
+        <item>Web Development</item>
+        <item>Agile Development</item>
+        <item></item>
+
+    </array>
+</resources>

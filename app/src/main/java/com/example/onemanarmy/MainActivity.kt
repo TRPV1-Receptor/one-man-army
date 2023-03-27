@@ -30,29 +30,6 @@ class MainActivity : AppCompatActivity(), FragmentNavigation  {
             .add(R.id.container,LoginFragment())
             .commit()
 
-
-        // Get the radio group
-        val radioGroup = findViewById<RadioGroup>(R.id.radioGroup)
-
-        // Set a listener for the radio group
-        radioGroup.setOnCheckedChangeListener { _, checkedId ->
-            // Get the selected radio button
-            val radioButton = findViewById<RadioButton>(checkedId)
-
-            // Check which radio button was selected
-            when (radioButton.id) {
-                R.id.clientRadioButton -> {
-                    // Switch to the client activity
-                    val intent = Intent(this, MainActivity::class.java)
-                    startActivity(intent)
-                }
-                R.id.businessOwnerRadioButton -> {
-                    // Switch to the business owner activity
-                    val intent = Intent(this, MainActivity::class.java)
-                    startActivity(intent)
-                }
-            }
-        }
     }
     fun basicReadWrite() {
         // [START write_message]
