@@ -25,15 +25,15 @@ class OwnerDashboard : AppCompatActivity() {
 
 
         val aptButton = findViewById<ConstraintLayout>(R.id.appointments)
-        aptButton.setOnClickListener(View.OnClickListener {
+        aptButton.setOnClickListener {
             val intent = Intent(this, AppointmentActivity::class.java,)
             startActivity(intent)
 
-        })
+        }
 
         val docButton = findViewById<ConstraintLayout>(R.id.documentscanner)
         docButton.setOnClickListener(View.OnClickListener {
-            val intent = Intent(this, DocScannerActivity::class.java,)
+            val intent = Intent(this, DocScanner_FirstPage_Temp::class.java,)
             startActivity(intent)
 
         })

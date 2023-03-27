@@ -1,8 +1,13 @@
 package com.example.onemanarmy
 
 import android.Manifest
+import android.app.Activity
 import android.content.ContentValues
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.media.Image
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
@@ -21,6 +26,7 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.core.Preview
 import androidx.camera.core.CameraSelector
 import android.util.Log
+import android.widget.ImageView
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.ImageProxy
@@ -31,15 +37,23 @@ import androidx.camera.video.QualitySelector
 import androidx.camera.video.VideoRecordEvent
 import androidx.core.content.PermissionChecker
 import com.example.onemanarmy.databinding.ActivityDocScannerBinding
+import com.scanlibrary.ScanActivity
+import com.scanlibrary.ScanConstants
+import org.opencv.android.OpenCVLoader
+import java.io.IOException
 import java.nio.ByteBuffer
 import java.text.SimpleDateFormat
 import java.util.Locale
+
 
 typealias LumaListener = (luma: Double) -> Unit
 
 
 class DocScannerActivity : AppCompatActivity() {
     private lateinit var viewBinding: ActivityDocScannerBinding
+
+    val REQUEST_CODE = 99
+    private val scannedImageView : ImageView? = null
 
     private var imageCapture: ImageCapture? = null
 
@@ -53,7 +67,11 @@ class DocScannerActivity : AppCompatActivity() {
         viewBinding = ActivityDocScannerBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
 
+
+        val preferences = ScanConstants.OPEN_CAMERA
+
         // Request camera permissions
+
         if (allPermissionsGranted()) {
             startCamera()
         } else {
@@ -62,11 +80,38 @@ class DocScannerActivity : AppCompatActivity() {
         }
 
         // Set up the listeners for take photo and video capture buttons
-        viewBinding.imageCaptureButton.setOnClickListener { takePhoto() }
+        //viewBinding.imageCaptureButton.setOnClickListener { takePhoto() }
+
+        viewBinding.imageCaptureButton.setOnClickListener{
+            val intent = Intent(this,ScanActivity::class.java)
+            intent.putExtra(ScanConstants.OPEN_INTENT_PREFERENCE,preferences)
+            startActivityForResult(intent, REQUEST_CODE)
+        }
+
         viewBinding.videoCaptureButton.setOnClickListener { captureVideo() }
 
         cameraExecutor = Executors.newSingleThreadExecutor()
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK){
+            val uri:Uri? = data?.extras?.getParcelable(ScanConstants.SCANNED_RESULT)
+            var bitmap : Bitmap? = null
+            try {
+                if (uri != null) {
+                    bitmap = MediaStore.Images.Media.getBitmap(contentResolver,uri)
+                    contentResolver.delete(uri,null,null)
+
+                }
+            }
+            catch (e:IOException){
+                e.printStackTrace()
+            }
+        }
+    }
+
+
 
     private fun takePhoto() {
         // Get a stable reference of the modifiable image capture use case
