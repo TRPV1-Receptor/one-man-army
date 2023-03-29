@@ -1,0 +1,2 @@
+ninja: Entering directory `C:\Users\Captain Hook\Desktop\New folder\oneManArmy\OpenCV\.cxx\Debug\292a4i59\armeabi-v7a'
+ninja: no work to do.
