@@ -26,13 +26,10 @@
             android:name=".DocScanner_FirstPage_Temp"
             android:exported="false" />
         <activity
-            android:name=".Availibility"
-            android:exported="false" />
-        <activity
             android:name=".UserTypeActivity"
             android:exported="false" />
         <activity
-            android:name=".AvailabilityAcivity"
+            android:name=".Availibility"
             android:exported="false" />
         <activity
             android:name=".BusinessRegister"
@@ -42,6 +39,9 @@
             android:exported="false" />
         <activity
             android:name=".AccountActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AboutActivity"
             android:exported="false" />
         <activity
             android:name=".ReceiptCreatorActivity"

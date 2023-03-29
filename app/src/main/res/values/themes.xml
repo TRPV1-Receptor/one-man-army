@@ -34,4 +34,9 @@
         <item name="colorSwitchThumbNormal">#FFFFFF</item>
         <item name="android:colorForeground">#99FFFFFF</item>
     </style>
+
+    <style name="Circular">
+        <item name="cornerSize">50%</item>
+
+    </style>
 </resources>
