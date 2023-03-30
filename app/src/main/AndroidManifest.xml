@@ -24,10 +24,13 @@
         android:theme="@style/Theme.OneManArmy"
         tools:targetApi="31">
         <activity
+            android:name=".DocScanner_FirstPage_Temp"
+            android:exported="false" />
+        <activity
             android:name=".UserTypeActivity"
             android:exported="false" />
         <activity
-            android:name=".AvailabilityAcivity"
+            android:name=".Availibility"
             android:exported="false" />
         <activity
             android:name=".BusinessRegister"
@@ -38,8 +41,9 @@
         <activity
             android:name=".AccountActivity"
             android:exported="false" />
-        <activity android:name=".AboutActivity"
-            android:exported="false"/>
+        <activity
+            android:name=".AboutActivity"
+            android:exported="false" />
         <activity
             android:name=".ReceiptCreatorActivity"
             android:exported="false"

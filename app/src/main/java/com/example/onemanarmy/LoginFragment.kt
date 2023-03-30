@@ -57,7 +57,7 @@ class LoginFragment : Fragment() {
         val btnopen = view.findViewById<Button>(R.id.test)
         btnopen.setOnClickListener {
             requireActivity().run {
-                startActivity(Intent(this, OwnerDashboard::class.java))
+                startActivity(Intent(this, Availibility::class.java))
                 finish()
             }
         }
