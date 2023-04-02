@@ -8,30 +8,4 @@
     android:fitsSystemWindows="true"
     tools:context=".MainActivity">
 
-    <RadioGroup
-        android:id="@+id/radioGroup"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="16dp">
-
-    <RadioButton
-        android:id="@+id/clientRadioButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Client"
-        android:checked="true" />
-
-    <RadioButton
-        android:id="@+id/businessOwnerRadioButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Business Owner" />
-
-    <Button
-        android:id="@+id/btn_next"
-        android:text="Next"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-    </RadioGroup>
 </FrameLayout>
