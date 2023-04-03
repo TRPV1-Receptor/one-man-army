@@ -111,16 +111,6 @@
                 android:layout_marginHorizontal="16dp"
                 android:background="#FFFFFF"
                 android:padding="8dp" />
-
-            <Button
-                android:id="@+id/save_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:background="#FFFFFF"
-                android:text="Save"
-                android:textColor="#A2C872"
-                android:textSize="16sp" />
             <Spinner
                 android:id="@+id/skills_spinner"
                 android:layout_width="match_parent"
@@ -140,6 +130,15 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:visibility="gone"/>
+            <Button
+                android:id="@+id/save_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:background="#FFFFFF"
+                android:text="Save"
+                android:textColor="#A2C872"
+                android:textSize="16sp" />
 
         </LinearLayout>
 
