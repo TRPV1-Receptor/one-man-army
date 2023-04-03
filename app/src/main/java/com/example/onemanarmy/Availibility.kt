@@ -30,7 +30,7 @@ class Availibility : AppCompatActivity() {
 
         val test_but = findViewById<Button>(R.id.test_but)
         test_but.setOnClickListener{
-            val intent = Intent(this, OwnerDashboard::class.java)
+            val intent = Intent(this, ProfileSetupActivity::class.java)
             startActivity(intent)
         }
 

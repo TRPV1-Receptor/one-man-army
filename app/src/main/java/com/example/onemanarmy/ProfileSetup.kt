@@ -95,6 +95,7 @@ class ProfileSetupActivity : AppCompatActivity() {
 
         // Set up save button
         saveButton.setOnClickListener {
+            val intent = Intent(this, OwnerDashboard::class.java)
             saveProfile()
         }
     }
