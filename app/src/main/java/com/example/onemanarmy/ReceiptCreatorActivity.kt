@@ -3,9 +3,11 @@ package com.example.onemanarmy
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.*
 import android.graphics.pdf.PdfDocument
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
@@ -22,6 +24,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.core.view.get
 import androidx.core.view.iterator
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -152,8 +155,10 @@ class ReceiptCreatorActivity : AppCompatActivity() {
     }
 
     private fun savePDF(){
-        var name = receiptList.removeLast().serviceProvided
         var email = receiptList.removeLast().serviceProvided
+        var name = receiptList.removeLast().serviceProvided
+        var emailArr = arrayOf(email)
+
 
 
         val pageHeight = 1120
@@ -276,10 +281,30 @@ class ReceiptCreatorActivity : AppCompatActivity() {
         try {
             pdfDocument.writeTo(FileOutputStream(file))
             Toast.makeText(this,"PDF Generated!",duration).show()
+            val intent = Intent(Intent.ACTION_SEND)
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            val path = FileProvider.getUriForFile(this,BuildConfig.APPLICATION_ID + ".provider",file)
+            intent.type = "message/rfc822"
+            intent.putExtra(Intent.EXTRA_EMAIL, emailArr)
+            intent.putExtra(Intent.EXTRA_SUBJECT, "Service Receipt")
+            intent.putExtra(Intent.EXTRA_TEXT, "Dear $name,\n" +
+                    "\n" +
+                    "Thank you for your recent purchase at [Business Name]. We are writing to confirm that we have sent your receipt to the email address you provided.\n" +
+                    "\n" +
+                    "Your receipt is attached to this email as a PDF document. Please note that this is an official record of your transaction, so we recommend that you keep it in a safe place for future reference. If you have any questions or concerns about your receipt or your purchase, please don't hesitate to contact us.\n" +
+                    "\n" +
+                    "Once again, thank you for choosing [Business Name]. We look forward to serving you again in the future.\n" +
+                    "\n" +
+                    "Best regards,\n" +
+                    "[Your Name]\n" +
+                    "[Business Name]")
+            intent.putExtra(Intent.EXTRA_STREAM,path)
+            startActivity(Intent.createChooser(intent,"Send email..."))
         }catch (e:Exception){
             e.printStackTrace()
             Toast.makeText(this,"Oops, something went wrong.",duration).show()
         }
+
         pdfDocument.close()
     }
 
