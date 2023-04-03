@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import java.io.FileNotFoundException
+import android.graphics.drawable.BitmapDrawable
 
 class ProfileSetupActivity : AppCompatActivity() {
 
@@ -98,7 +99,9 @@ class ProfileSetupActivity : AppCompatActivity() {
             val intent = Intent(this, OwnerDashboard::class.java)
             saveProfile()
         }
+
     }
+
 
     private fun openGallery() {
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
@@ -117,7 +120,11 @@ class ProfileSetupActivity : AppCompatActivity() {
     private fun saveProfile() {
         val bio = bioEditText.text.toString()
         // Save profile picture and selected skills to user account
-        // ...
+        val profilePicture = (profilePictureImageView.drawable as BitmapDrawable).bitmap // get the user's selected profile picture
+        val selectedSkills = selectedSkillsList // get the user's selected skills
+
+        // TODO: Save the user's profile picture and selected skills to their account information
+
         // Finish activity and go back to previous screen
         finish()
     }
