@@ -61,6 +61,9 @@ class ProfileSetupActivity : AppCompatActivity() {
             val selectedSkill = skillsSpinner.selectedItem.toString()
             if (!selectedSkillsList.contains(selectedSkill)) {
                 selectedSkillsList.add(selectedSkill)
+                // Save the updated profile with the new skill added
+                saveProfile()
+                // Update the list of selected skills displayed to the user
                 updateSelectedSkillsList()
             }
         }
@@ -93,11 +96,17 @@ class ProfileSetupActivity : AppCompatActivity() {
                 openCamera()
             }
         }
-
         // Set up save button
         saveButton.setOnClickListener {
-            val intent = Intent(this, OwnerDashboard::class.java)
-            saveProfile()
+            if (profilePictureImageView == null) {
+                // Display error message if no profile picture has been selected
+                Toast.makeText(this, "Please upload or take a profile picture", Toast.LENGTH_SHORT).show()
+            } else {
+                // Profile picture has been selected, proceed with saving profile
+                saveProfile()
+                val intent = Intent(this, OwnerDashboard::class.java)
+                startActivity(intent)
+            }
         }
 
     }

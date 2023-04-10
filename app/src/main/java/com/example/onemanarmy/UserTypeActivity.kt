@@ -23,9 +23,13 @@ class UserTypeActivity : AppCompatActivity() {
             val selectedId = userTypeRadioGroup?.checkedRadioButtonId
             if (selectedId == R.id.ownerRadioButton) {
                 // User selected Owner
+                //val intent = Intent(this, OwnerSignUpActivity::class.java)
+                startActivity(intent)
                 // TODO: Handle Owner selection
             } else if (selectedId == R.id.customerRadioButton) {
                 // User selected Customer
+                //val intent = Intent(this, CustomerDashboardActivity::class.java)
+                startActivity(intent)
                 // TODO: Handle Customer selection
             }
         }
