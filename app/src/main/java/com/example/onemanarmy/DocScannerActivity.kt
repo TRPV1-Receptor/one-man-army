@@ -36,6 +36,7 @@ import androidx.camera.video.Quality
 import androidx.camera.video.QualitySelector
 import androidx.camera.video.VideoRecordEvent
 import androidx.core.content.PermissionChecker
+import androidx.recyclerview.widget.RecyclerView
 import com.example.onemanarmy.databinding.ActivityDocScannerBinding
 import com.scanlibrary.ScanActivity
 import com.scanlibrary.ScanConstants
