@@ -60,23 +60,18 @@ class DocScanner_FirstPage_Temp : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK){
-            val uri: Uri? = data?.extras?.getParcelable(ScanConstants.SCANNED_RESULT)
-            val bitmap : Bitmap
+            val imageBitMap = data?.extras?.get("data") as Bitmap
+            scannedImageView.setImageBitmap(imageBitMap)
             try {
-                if (uri != null) {
-                    bitmap = MediaStore.Images.Media.getBitmap(contentResolver,uri)
-                    contentResolver.delete(uri,null,null)
-                    scannedImageView.setImageBitmap(bitmap)
-                }
+                val imageUri = data?.data
+                val inputStream = imageUri?.let { contentResolver.openInputStream(it) }
+                val imageBitmap = BitmapFactory.decodeStream(inputStream)
+                scannedImageView.setImageBitmap(imageBitmap)
             }
             catch (e:IOException){
                 e.printStackTrace()
             }
         }
-    }
-
-    open fun convertByteArrayToBitmap(data: ByteArray): Bitmap? {
-        return BitmapFactory.decodeByteArray(data, 0, data.size)
     }
 }
 
