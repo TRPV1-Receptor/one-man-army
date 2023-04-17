@@ -68,16 +68,12 @@ class LoginFragment : Fragment() {
      *   to sign in the user with Firebase Authentication.
      */
     private fun validateForm(){
-        val icon = AppCompatResources.getDrawable(requireContext(),
-            R.drawable.errorsymbol)
-
-        icon?.setBounds(0,0, icon.intrinsicWidth,icon.intrinsicHeight)
         when{
             TextUtils.isEmpty(username.text.toString().trim())->{
-                username.setError("Please Enter Username",icon)
+                username.error = "Please Enter Email"
             }
             TextUtils.isEmpty(password.text.toString().trim())->{
-                password.setError("Please Enter Password",icon)
+                password.error = "Please Enter Password"
             }
 
             username.text.toString().isNotEmpty() &&
@@ -85,7 +81,6 @@ class LoginFragment : Fragment() {
             {
                 if(username.text.toString().matches(Regex("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"))) {
                     firebaseSignIn()
-                    Toast.makeText(context, "Login Successful", Toast.LENGTH_SHORT).show()
                 }
                 else{
                     Toast.makeText(context,"Please use email format", Toast.LENGTH_SHORT).show()
@@ -110,12 +105,11 @@ class LoginFragment : Fragment() {
                 val intent = Intent(context, OwnerDashboard::class.java)
                 startActivity(intent)
             } else {
-                Toast.makeText(context, it.exception.toString(), Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Login Failed. Please try again.", Toast.LENGTH_SHORT).show()
             }
         }
-
     }
-    }
+}
 
 
 

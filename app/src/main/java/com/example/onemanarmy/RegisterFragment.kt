@@ -14,6 +14,7 @@ import com.google.android.gms.common.api.Api.Client
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import kotlinx.coroutines.delay
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -163,12 +164,19 @@ class RegisterFragment : Fragment() {
             }
             view.findViewById<Button>(R.id.btn_next_1).setOnClickListener {
                 if(userType == "owner"){
-                    container?.removeAllViews()
-                    container?.addView(view1)
+                    if(validateEmptyForm()){
+                        container?.removeAllViews()
+                        container?.addView(view1)
+
+                    }
+
                 }else{
                     requireActivity().run {
-                        startActivity(Intent(this, ClientDashboard::class.java))
-                        finish()
+                        if (validateEmptyForm()){
+                            startActivity(Intent(this, ClientDashboard::class.java))
+                            finish()
+                        }
+
                     }
 
                 }
@@ -182,8 +190,8 @@ class RegisterFragment : Fragment() {
 
             view1.findViewById<Button>(R.id.btn_next_2).setOnClickListener {
                 requireActivity().run {
-                    startActivity(Intent(this, ProfileSetupActivity::class.java))
-                    finish()
+                    firebaseSignUp()
+
                 }
             }
 
@@ -217,39 +225,49 @@ class RegisterFragment : Fragment() {
                         Toast.makeText(context, task.exception?.message, Toast.LENGTH_SHORT).show()
                     }
                 }
+
+
+
         }
 
         /**
          *  logic to ensure that the user enters valid input values before registering their account
          */
-        private fun validateEmptyForm() {
-            val icon = AppCompatResources.getDrawable(
-                requireContext(),
-                R.drawable.errorsymbol
-            )
-
-            icon?.setBounds(0, 0, icon.intrinsicWidth, icon.intrinsicHeight)
+        private fun validateEmptyForm(): Boolean {
             when {
+                TextUtils.isEmpty(firstName.text.toString().trim()) -> {
+                    firstName.error = "Please Enter First Name"
+                    return false
+                }
+                TextUtils.isEmpty(lastName.text.toString().trim()) -> {
+                    lastName.error = "Please Enter Last Name"
+                    return false
+                }
                 TextUtils.isEmpty(username.text.toString().trim()) -> {
-                    username.setError("Please Enter Username", icon)
+                    username.error = "Please Enter Email"
+                    return false
+
                 }
                 TextUtils.isEmpty(password.text.toString().trim()) -> {
-                    password.setError("Please Enter Password", icon)
+                    password.error = "Please Enter Password"
+                    return false
+
                 }
                 TextUtils.isEmpty(cnfPassword.text.toString().trim()) -> {
-                    cnfPassword.setError("Please Enter Password Again", icon)
+                    cnfPassword.error = "Please Enter Password Again"
+                    return false
                 }
 
-                username.text.toString().isNotEmpty() &&
-                        password.text.toString().isNotEmpty() &&
-                        cnfPassword.text.toString().isNotEmpty() -> {
+
+                username.text.toString().isNotEmpty()
+                        && password.text.toString().isNotEmpty()
+                        && cnfPassword.text.toString().isNotEmpty()
+                -> {
                     if (username.text.toString()
                             .matches(Regex("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"))
                     ) {
                         if (password.text.toString().length >= 5) {
-
-                            if (password.text.toString() == cnfPassword.text.toString()) {
-
+                            return if (password.text.toString() == cnfPassword.text.toString()) {
                                 firebaseSignUp()
                                 saveUserData()
                                 Toast.makeText(
@@ -257,18 +275,22 @@ class RegisterFragment : Fragment() {
                                     "Registration Successful",
                                     Toast.LENGTH_SHORT
                                 ).show()
+                                true
                             } else {
-                                cnfPassword.setError("Password didn't match", icon)
+                                password.error = "Password didn't match"
+                                false
                             }
                         } else {
-                            password.setError("Please Enter at least 5 characters", icon)
+                            password.error = "Please Enter at least 5 characters"
+                            return false
                         }
-
-                    }//else{
-                    //   username.setError("Please Enter Valid Email Id",icon)
-                    //}
+                    }else{
+                       username.error = "Please Enter Valid Email Id"
+                        return false
+                    }
                 }
             }
+            return true
         }
 
         private fun saveUserData() {

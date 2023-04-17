@@ -35,7 +35,7 @@ class ContactsAdapter (private val mContacts: List<Contact>): RecyclerView.Adapt
         val contact: Contact = mContacts.get(position)
         // Set item views based on your views and data model
         val textView = viewHolder.nameTextView
-        textView.setText(contact.name)
+        textView.text = contact.name
         val button = viewHolder.messageButton
         button.text = if (contact.isOnline) "Message" else "Offline"
         button.isEnabled = contact.isOnline
