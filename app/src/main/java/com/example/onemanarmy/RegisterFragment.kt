@@ -8,13 +8,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
-import com.google.android.gms.common.api.Api.Client
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import kotlinx.coroutines.delay
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -33,18 +30,15 @@ class RegisterFragment : Fragment() {
     private lateinit var cnfPassword: EditText
     private lateinit var firstName: EditText
     private lateinit var lastName: EditText
-    private lateinit var custType: RadioGroup
     private lateinit var busName: EditText
     private lateinit var busAddress: EditText
     private lateinit var busPhone: EditText
     private lateinit var busEmail: EditText
     private lateinit var service: Spinner
     private lateinit var items: Array<String>
-    private lateinit var radioGroup: RadioGroup
-
-    private lateinit var auth: FirebaseAuth
-
+    private lateinit var userType: RadioGroup
     //DB variable
+    private lateinit var auth: FirebaseAuth
     private lateinit var dbRef: DatabaseReference
 
     // TODO: Rename and change types of parameters
@@ -74,27 +68,27 @@ class RegisterFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_register_1, container, false)
         val view1 = inflater.inflate(R.layout.fragment_register_2, container, false)
 
-        radioGroup = view.findViewById(R.id.cust_type)
+
 
         username = view.findViewById(R.id.reg_email)
         password = view.findViewById(R.id.reg_password)
         firstName = view.findViewById(R.id.first_name)
         lastName = view.findViewById(R.id.last_name)
-        custType = view.findViewById(R.id.cust_type)
         cnfPassword = view.findViewById(R.id.reg_cnf_password)
+        userType = view.findViewById(R.id.cust_type)
 
         busName = view1.findViewById(R.id.bus_name)
         busAddress = view1.findViewById(R.id.bus_address)
         busEmail = view1.findViewById(R.id.bus_email)
         busPhone = view1.findViewById(R.id.bus_number)
-
         service = view1.findViewById(R.id.service)
 
         items = resources.getStringArray(R.array.services)
+
         val buttonNext = view.findViewById<Button>(R.id.btn_next_1)
         var userType = "owner"
 
-        radioGroup.setOnCheckedChangeListener { _, checkedId ->
+        this.userType.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
                 R.id.client -> {
                     userType = "client"
@@ -112,18 +106,12 @@ class RegisterFragment : Fragment() {
                 return position!=0
             }
 
-            override fun getDropDownView(
-                position: Int,
-                convertView: View?,
-                parent: ViewGroup
-            ): View {
+            override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup)
+            : View {
                 val view: TextView = super.getDropDownView(position, convertView, parent) as TextView
                 if (position == 0){
                     view.setTextColor(Color.WHITE)
-                }else{
-
-                }
-
+                }else{ }
                 return view
             }
         }
@@ -133,12 +121,8 @@ class RegisterFragment : Fragment() {
 
         service.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
 
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                postion: Int,
-                id: Long
-            ) {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, postion: Int, id: Long)
+            {
                 val value = parent!!.getItemAtPosition(postion).toString()
                 if (value == items[0]){
                     (view as TextView).setTextColor(Color.WHITE)
@@ -146,9 +130,7 @@ class RegisterFragment : Fragment() {
                     (view as TextView).setTextColor(Color.WHITE)
                 }
             }
-            override fun onNothingSelected(p0: AdapterView<*>?) {
-            }
-
+            override fun onNothingSelected(p0: AdapterView<*>?) {}
         }
             // Authentication initialize
             auth = FirebaseAuth.getInstance()
@@ -167,20 +149,15 @@ class RegisterFragment : Fragment() {
                     if(validateEmptyForm()){
                         container?.removeAllViews()
                         container?.addView(view1)
-
                     }
-
                 }else{
                     requireActivity().run {
                         if (validateEmptyForm()){
                             startActivity(Intent(this, ClientDashboard::class.java))
                             finish()
                         }
-
                     }
-
                 }
-
             }
 
             view1.findViewById<Button>(R.id.btn_prev_1).setOnClickListener {
@@ -191,17 +168,10 @@ class RegisterFragment : Fragment() {
             view1.findViewById<Button>(R.id.btn_next_2).setOnClickListener {
                 requireActivity().run {
                     firebaseSignUp()
-
                 }
             }
-
-
             return view
-
         }
-
-
-
 
         /**
          * allowing users to sign up using their email address and password.
@@ -225,9 +195,6 @@ class RegisterFragment : Fragment() {
                         Toast.makeText(context, task.exception?.message, Toast.LENGTH_SHORT).show()
                     }
                 }
-
-
-
         }
 
         /**
@@ -246,7 +213,6 @@ class RegisterFragment : Fragment() {
                 TextUtils.isEmpty(username.text.toString().trim()) -> {
                     username.error = "Please Enter Email"
                     return false
-
                 }
                 TextUtils.isEmpty(password.text.toString().trim()) -> {
                     password.error = "Please Enter Password"
@@ -258,10 +224,7 @@ class RegisterFragment : Fragment() {
                     return false
                 }
 
-
-                username.text.toString().isNotEmpty()
-                        && password.text.toString().isNotEmpty()
-                        && cnfPassword.text.toString().isNotEmpty()
+                username.text.toString().isNotEmpty() && password.text.toString().isNotEmpty() && cnfPassword.text.toString().isNotEmpty()
                 -> {
                     if (username.text.toString()
                             .matches(Regex("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"))
@@ -269,15 +232,14 @@ class RegisterFragment : Fragment() {
                         if (password.text.toString().length >= 5) {
                             return if (password.text.toString() == cnfPassword.text.toString()) {
                                 firebaseSignUp()
-                                saveUserData()
-                                Toast.makeText(
-                                    context,
-                                    "Registration Successful",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                                true
+                                if (saveUserData()){
+                                    Toast.makeText(context, "Registration Successful", Toast.LENGTH_SHORT).show()
+                                    true
+                                }else{
+                                    false
+                                }
                             } else {
-                                password.error = "Password didn't match"
+                                password.error = "Password did not match"
                                 false
                             }
                         } else {
@@ -293,22 +255,22 @@ class RegisterFragment : Fragment() {
             return true
         }
 
-        private fun saveUserData() {
-
+        private fun saveUserData(): Boolean {
             //getting values from user input
             val userName = username.text.toString()
-
             val userId = dbRef.push().key!!
-
             val user = UserModel(userId, userName)
+
+            var flag = true
 
             dbRef.child(userId).setValue(user)
                 .addOnCompleteListener {
                     Toast.makeText(context, "Data inserted successfully", Toast.LENGTH_LONG).show()
                 }.addOnFailureListener { err ->
                     Toast.makeText(context, "Error ${err.message}", Toast.LENGTH_LONG).show()
+                    flag = false
                 }
-
+            return flag
         }
     }
 
