@@ -19,9 +19,6 @@ class MainActivity : AppCompatActivity(), FragmentNavigation  {
     companion object {
         private const val TAG = "KotlinActivity"
     }
-
-    
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         FirebaseApp.initializeApp(this);

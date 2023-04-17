@@ -24,7 +24,7 @@ class SettingsActivity : AppCompatActivity() {
 
 
     companion object {
-        val IMAGE_REQUEST_CODE = 1_000;
+        val IMAGE_REQUEST_CODE = 1_000
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -147,7 +147,7 @@ class SettingsActivity : AppCompatActivity() {
             // it's object named intent.
             // SecondActivty is the name of new created EmptyActivity.
             val intent = Intent(this,AboutActivity::class.java)
-            startActivity(intent);
+            startActivity(intent)
         })
 
 

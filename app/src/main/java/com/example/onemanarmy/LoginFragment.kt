@@ -9,9 +9,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
 
 // TODO: Rename parameter arguments, choose names that match
@@ -38,28 +38,18 @@ class LoginFragment : Fragment() {
 
     ): View? {
         // Inflate the layout for this fragment
-        var view = inflater.inflate(R.layout.fragment_login, container, false)
+        var view = inflater.inflate(R.layout.login_fragment, container, false)
 
-        username = view.findViewById(R.id.log_username)
-        password = view.findViewById(R.id.log_password)
+        username = view.findViewById(R.id.reg_email)
+        password = view.findViewById(R.id.reg_password)
         firebaseAuth = FirebaseAuth.getInstance()
         /**
          *  button (btn_register) that navigates to the RegisterFragment.
          */
-        view.findViewById<Button>(R.id.btn_register).setOnClickListener {
+        view.findViewById<TextView>(R.id.btn_register).setOnClickListener {
             var navRegister = activity as FragmentNavigation
             navRegister.navigateFrag(RegisterFragment(), false)
 
-        }
-        /**
-         *  "Test" button (test) that starts an activity (OwnerDashboard).
-         */
-        val btnopen = view.findViewById<Button>(R.id.test)
-        btnopen.setOnClickListener {
-            requireActivity().run {
-                startActivity(Intent(this, Availibility::class.java))
-                finish()
-            }
         }
 
         /**
@@ -78,16 +68,12 @@ class LoginFragment : Fragment() {
      *   to sign in the user with Firebase Authentication.
      */
     private fun validateForm(){
-        val icon = AppCompatResources.getDrawable(requireContext(),
-            R.drawable.errorsymbol)
-
-        icon?.setBounds(0,0, icon.intrinsicWidth,icon.intrinsicHeight)
         when{
             TextUtils.isEmpty(username.text.toString().trim())->{
-                username.setError("Please Enter Username",icon)
+                username.error = "Please Enter Email"
             }
             TextUtils.isEmpty(password.text.toString().trim())->{
-                password.setError("Please Enter Password",icon)
+                password.error = "Please Enter Password"
             }
 
             username.text.toString().isNotEmpty() &&
@@ -95,7 +81,6 @@ class LoginFragment : Fragment() {
             {
                 if(username.text.toString().matches(Regex("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"))) {
                     firebaseSignIn()
-                    Toast.makeText(context, "Login Successful", Toast.LENGTH_SHORT).show()
                 }
                 else{
                     Toast.makeText(context,"Please use email format", Toast.LENGTH_SHORT).show()
@@ -120,12 +105,11 @@ class LoginFragment : Fragment() {
                 val intent = Intent(context, OwnerDashboard::class.java)
                 startActivity(intent)
             } else {
-                Toast.makeText(context, it.exception.toString(), Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Login Failed. Please try again.", Toast.LENGTH_SHORT).show()
             }
         }
-
     }
-    }
+}
 
 
 

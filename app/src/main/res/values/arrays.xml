@@ -29,4 +29,34 @@
         <item></item>
 
     </array>
+
+    <array name="services">
+        <item>Service Provided</item>
+        <item>Automotive</item>
+        <item>Beauty</item>
+        <item>Cell/Mobile</item>
+        <item>Computer</item>
+        <item>Creative</item>
+        <item>Cycle</item>
+        <item>Event</item>
+        <item>Farm+Garden</item>
+        <item>Financial</item>
+        <item>Health/Wellness</item>
+        <item>Household</item>
+        <item>Labor/Move</item>
+        <item>Legal</item>
+        <item>Lessons</item>
+        <item>Marine</item>
+        <item>Pet</item>
+        <item>Real Estate</item>
+        <item>Skilled Trade</item>
+        <item>Advertising</item>
+        <item>Writing</item>
+    </array>
 </resources>
+
+
+
+
+
+
