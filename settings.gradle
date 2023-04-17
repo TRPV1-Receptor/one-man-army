@@ -18,5 +18,3 @@ dependencyResolutionManagement {
 }
 rootProject.name = "OneManArmy"
 include ':app'
-include ':OpenCV'
-include ':ScanLibrary'

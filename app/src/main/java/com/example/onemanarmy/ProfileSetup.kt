@@ -15,8 +15,10 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import java.io.FileNotFoundException
 import android.graphics.drawable.BitmapDrawable
+import android.view.View
+import android.widget.AdapterView.OnItemClickListener
 
-class ProfileSetupActivity : AppCompatActivity() {
+class ProfileSetupActivity : AppCompatActivity(), OnItemClickListener{
 
     companion object {
         const val REQUEST_IMAGE_CAPTURE = 1
@@ -34,7 +36,7 @@ class ProfileSetupActivity : AppCompatActivity() {
     private lateinit var saveButton: Button
 
     private lateinit var skillsAdapter: ArrayAdapter<String>
-    private var selectedSkillsList = mutableListOf<String>()
+    private var selectedSkillsList= arrayListOf<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,7 +49,7 @@ class ProfileSetupActivity : AppCompatActivity() {
         bioEditText = findViewById(R.id.bio_edit_text)
         skillsSpinner = findViewById(R.id.skills_spinner)
         addSkillButton = findViewById(R.id.add_skill_button)
-        selectedSkillsListView = findViewById(R.id.selected_skills_list_view)
+        selectedSkillsListView = findViewById(R.id.skillsListView)
         saveButton = findViewById(R.id.save_button)
 
         // Set up skills spinner
@@ -56,17 +58,24 @@ class ProfileSetupActivity : AppCompatActivity() {
         skillsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         skillsSpinner.adapter = skillsAdapter
 
+
+
+        val skillViewAdapter:ArrayAdapter<String> = ArrayAdapter(this,android.R.layout.simple_list_item_1,selectedSkillsList)
+        selectedSkillsListView.adapter = skillViewAdapter
+
         // Set up add skill button
         addSkillButton.setOnClickListener {
             val selectedSkill = skillsSpinner.selectedItem.toString()
-            if (!selectedSkillsList.contains(selectedSkill)) {
+            if (selectedSkillsList.contains(selectedSkill)) {
+                Toast.makeText(this,"Skill already added!",Toast.LENGTH_SHORT).show()
+            }else{
                 selectedSkillsList.add(selectedSkill)
-                updateSelectedSkillsList()
+                skillViewAdapter.notifyDataSetChanged()
             }
         }
 
         // Set up selected skills list view
-        selectedSkillsListView.adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, selectedSkillsList)
+
 
         // Set up upload picture button
         uploadPictureButton.setOnClickListener {
@@ -113,10 +122,7 @@ class ProfileSetupActivity : AppCompatActivity() {
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         startActivityForResult(intent, REQUEST_IMAGE_CAPTURE)
     }
-    private fun updateSelectedSkillsList() {
-        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, selectedSkillsList)
-        selectedSkillsListView.adapter = adapter
-    }
+
 
     private fun saveProfile() {
         val bio = bioEditText.text.toString()
@@ -167,5 +173,9 @@ class ProfileSetupActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    override fun onItemClick(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+        TODO("Not yet implemented")
     }
 }

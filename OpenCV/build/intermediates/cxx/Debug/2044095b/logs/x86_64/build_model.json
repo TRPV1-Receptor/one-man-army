@@ -126,7 +126,7 @@
         "rootBuildGradleFolder": "C:\\Users\\Captain Hook\\Desktop\\New folder\\oneManArmy",
         "sdkFolder": "C:\\Users\\Captain Hook\\AppData\\Local\\Android\\Sdk",
         "isBuildOnlyTargetAbiEnabled": true,
-        "ideBuildTargetAbi": "x86_64,arm64-v8a",
+        "ideBuildTargetAbi": "x86_64,x86",
         "isCmakeBuildCohabitationEnabled": false,
         "isPrefabEnabled": false
       },

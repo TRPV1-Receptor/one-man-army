@@ -31,12 +31,6 @@ class OwnerDashboard : AppCompatActivity() {
 
         }
 
-        val docButton = findViewById<ConstraintLayout>(R.id.documentscanner)
-        docButton.setOnClickListener(View.OnClickListener {
-            val intent = Intent(this, DocScanner_FirstPage_Temp::class.java,)
-            startActivity(intent)
-
-        })
 
         val receiptButton = findViewById<ConstraintLayout>(R.id.receiptcreator)
         receiptButton.setOnClickListener(View.OnClickListener {
