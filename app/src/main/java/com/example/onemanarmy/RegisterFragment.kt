@@ -132,7 +132,7 @@ class RegisterFragment : Fragment() {
             }
             override fun onNothingSelected(p0: AdapterView<*>?) {}
         }
-            // Authentication initialize
+            // Authentication initializegit
             auth = FirebaseAuth.getInstance()
 
             //Initialize db reference
