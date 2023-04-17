@@ -9,9 +9,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
 
 // TODO: Rename parameter arguments, choose names that match
@@ -38,28 +38,18 @@ class LoginFragment : Fragment() {
 
     ): View? {
         // Inflate the layout for this fragment
-        var view = inflater.inflate(R.layout.fragment_login, container, false)
+        var view = inflater.inflate(R.layout.login_fragment, container, false)
 
-        username = view.findViewById(R.id.log_username)
-        password = view.findViewById(R.id.log_password)
+        username = view.findViewById(R.id.reg_email)
+        password = view.findViewById(R.id.reg_password)
         firebaseAuth = FirebaseAuth.getInstance()
         /**
          *  button (btn_register) that navigates to the RegisterFragment.
          */
-        view.findViewById<Button>(R.id.btn_register).setOnClickListener {
+        view.findViewById<TextView>(R.id.btn_register).setOnClickListener {
             var navRegister = activity as FragmentNavigation
             navRegister.navigateFrag(RegisterFragment(), false)
 
-        }
-        /**
-         *  "Test" button (test) that starts an activity (OwnerDashboard).
-         */
-        val btnopen = view.findViewById<Button>(R.id.test)
-        btnopen.setOnClickListener {
-            requireActivity().run {
-                startActivity(Intent(this, Availibility::class.java))
-                finish()
-            }
         }
 
         /**
