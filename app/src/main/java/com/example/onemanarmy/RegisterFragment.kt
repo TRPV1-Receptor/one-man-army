@@ -37,7 +37,6 @@ class RegisterFragment : Fragment() {
     private lateinit var service: Spinner
     private lateinit var items: Array<String>
     private lateinit var userType: RadioGroup
-    private lateinit var radioGroup: RadioGroup
     //private lateinit var userType: String
 
 
@@ -123,6 +122,8 @@ class RegisterFragment : Fragment() {
             }else{
                 requireActivity().run {
                     if (validateEmptyForm()){
+                        firebaseSignUp()
+                        saveCustomerData()
                         startActivity(Intent(this, ClientDashboard::class.java))
                         finish()
                     }
@@ -290,6 +291,28 @@ class RegisterFragment : Fragment() {
                     Toast.makeText(context, "Error ${err.message}", Toast.LENGTH_LONG).show()
                 }
         }
+    private fun createOwner(){
+        val userId = dbRef.push().key!!
+        val user = OwnerModel(
+            userId,
+            "ehaz@yahoo.com",
+            "Elias",
+            "Hazboun",
+            "owner",
+            "Eli's Corner",
+            "1920 Exchange Drive",
+            "eliscorner@corner.com",
+            "252-683-5694",
+            "Assassination Services",
+            "Cheap prices, swift death, pictures for proof. Money up front. Physical proof will be extra charge.",
+            "Knifework",
+        )
+        dbRef.child(userId).setValue(user)
+            .addOnCompleteListener {
+            }.addOnFailureListener { err ->
+                Toast.makeText(context, "Error ${err.message}", Toast.LENGTH_LONG).show()
+            }
+    }
 }
 
 
