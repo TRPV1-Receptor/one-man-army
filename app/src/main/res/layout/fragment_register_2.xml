@@ -147,20 +147,21 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="64dp"
             android:layout_marginRight="64dp"
-            android:layout_marginBottom="30dp"
+            android:layout_marginTop="70dp"
             android:background="@drawable/background_login_btn"
             android:text="Next"
             android:textColor="#ffffff"
             android:textSize="18sp" />
-        <Button
-            android:id="@+id/btn_prev_1"
+        <TextView
+            android:id="@+id/bus_reg_back"
+            android:clickable="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="64dp"
-            android:layout_marginRight="64dp"
-            android:background="@drawable/background_login_btn"
-            android:text="Previous"
-            android:textColor="#ffffff"
-            android:textSize="18sp" />
+            android:layout_gravity="clip_horizontal"
+            android:layout_marginTop="10dp"
+            android:gravity="center_horizontal"
+            android:text="Already have an account? Log in"
+            android:textColor="#000000" />
+
     </LinearLayout>
 </LinearLayout>
