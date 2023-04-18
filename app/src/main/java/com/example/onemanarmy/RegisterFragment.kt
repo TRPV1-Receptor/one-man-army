@@ -10,7 +10,8 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.*
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -36,6 +37,10 @@ class RegisterFragment : Fragment() {
     private lateinit var service: Spinner
     private lateinit var items: Array<String>
     private lateinit var userType: RadioGroup
+    private lateinit var radioGroup: RadioGroup
+    //private lateinit var userType: String
+
+
     //DB variable
     private lateinit var auth: FirebaseAuth
     private lateinit var dbRef: DatabaseReference
@@ -111,7 +116,7 @@ class RegisterFragment : Fragment() {
                 if(validateEmptyForm()){
                     firebaseSignUp()
                     //TODO We need these next 3 lines not to execute if they already in system
-                    saveUserData()
+                    saveCustomerData()
                     container?.removeAllViews()
                     container?.addView(view1)
                 }
@@ -197,21 +202,10 @@ class RegisterFragment : Fragment() {
                 } else {
                     Toast.makeText(context, task.exception?.message, Toast.LENGTH_SHORT).show()
                 }
+
+
             }
     }
-    private fun saveUserData() {
-            //getting values from user input
-            val userName = username.text.toString()
-            val userId = dbRef.push().key!!
-            val user = UserModel(userId, userName)
-
-            dbRef.child(userId).setValue(user)
-                .addOnCompleteListener {
-                    Toast.makeText(context, "Data inserted successfully", Toast.LENGTH_LONG).show()
-                }.addOnFailureListener { err ->
-                    Toast.makeText(context, "Error ${err.message}", Toast.LENGTH_LONG).show()
-                }
-            }
 
 
     //logic to ensure that the user enters valid input values before registering their account
@@ -237,7 +231,7 @@ class RegisterFragment : Fragment() {
                 cnfPassword.error = "Please Enter Password Again"
                 return false
             }
-            password.text.toString().length<=5 -> {
+            password.text.toString().length <= 5 -> {
                 password.error = "Please Enter at least 5 characters"
                 return false
             }
@@ -246,15 +240,59 @@ class RegisterFragment : Fragment() {
                 return false
             }
         }
-        return if(username.text.toString().matches(emailPattern)){
+        return if (username.text.toString().matches(emailPattern)) {
             true
-        } else{
+        } else {
             username.error = "Please Enter Valid Email Id"
             false
         }
     }
 
+        //To be used with Customer Registration Page
+         private fun saveCustomerData() {
+
+            //getting values from user input
+            val userName = username.text.toString()
+            val firstName = firstName.text.toString()
+            val lastName = lastName.text.toString()
+            val password = password.text.toString()
+            val userType = usrType
+
+            val userId = dbRef.push().key!!
+            val user = UserModel(userId, userName, firstName, lastName, password, userType)
+
+            dbRef.child(userId).setValue(user)
+                .addOnCompleteListener {
+                Toast.makeText(context, "Data inserted successfully", Toast.LENGTH_LONG).show()
+                }.addOnFailureListener { err ->
+                Toast.makeText(context, "Error ${err.message}", Toast.LENGTH_LONG).show()
+                }
         }
+
+        //To be used with Owner Registration Page
+        private fun saveOwnerData() {
+
+            //getting values from user input
+            val userName = username.text.toString()
+            val firstName = firstName.text.toString()
+            val lastName = lastName.text.toString()
+            val password = password.text.toString()
+            val usrType = usrType
+
+            val userId = dbRef.push().key!!
+
+            val user = OwnerModel()
+
+            dbRef.child(userId).setValue(user)
+                .addOnCompleteListener {
+                    Toast.makeText(context, "Data inserted successfully", Toast.LENGTH_LONG).show()
+                }.addOnFailureListener { err ->
+                    Toast.makeText(context, "Error ${err.message}", Toast.LENGTH_LONG).show()
+                }
+        }
+}
+
+
 
 
 
