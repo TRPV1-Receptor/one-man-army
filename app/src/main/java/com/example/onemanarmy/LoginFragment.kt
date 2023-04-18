@@ -2,7 +2,9 @@ package com.example.onemanarmy
 
 import android.content.Intent
 import android.os.Bundle
+import android.provider.ContactsContract.Data
 import android.text.TextUtils
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +15,9 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -27,6 +32,11 @@ class LoginFragment : Fragment() {
     private lateinit var username: EditText
     private lateinit var password: EditText
     private lateinit var firebaseAuth: FirebaseAuth
+    private lateinit var dbRef: DatabaseReference
+    private  lateinit var userType:String
+
+
+
 
     /**This function is called when the fragment is created
      * and its UI is being created. It inflates the fragment layout (fragment_login.xml)
@@ -43,6 +53,8 @@ class LoginFragment : Fragment() {
         username = view.findViewById(R.id.reg_email)
         password = view.findViewById(R.id.reg_password)
         firebaseAuth = FirebaseAuth.getInstance()
+
+
         /**
          *  button (btn_register) that navigates to the RegisterFragment.
          */
@@ -56,7 +68,14 @@ class LoginFragment : Fragment() {
          *  "Login" button (btn_login) that calls the validateForm function.
          */
         view.findViewById<Button>(R.id.btn_login).setOnClickListener {
-            validateForm()
+
+            var query:Query = FirebaseDatabase.getInstance().getReference("Users")
+                .orderByChild("userName")
+                .equalTo(username.text.toString())
+
+            query.addListenerForSingleValueEvent(userListener)
+
+
         }
         return view
     }
@@ -68,6 +87,7 @@ class LoginFragment : Fragment() {
      *   to sign in the user with Firebase Authentication.
      */
     private fun validateForm(){
+
         when{
             TextUtils.isEmpty(username.text.toString().trim())->{
                 username.error = "Please Enter Email"
@@ -80,16 +100,15 @@ class LoginFragment : Fragment() {
                     password.text.toString().isNotEmpty() ->
             {
                 if(username.text.toString().matches(Regex("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"))) {
-                    firebaseSignIn()
+                    if (userType == "client"){
+                        clientSignIn()
+                    }else{
+                        ownerSignIn()
+                    }
                 }
                 else{
                     Toast.makeText(context,"Please use email format", Toast.LENGTH_SHORT).show()
                 }
-
-                    //The commented out lines are causing the text in the username box to
-                    //disappear after pressing login  -Elias
-                  //else{
-                    //username.setError("Please Enter Valid Email Id",icon)
                 }
             }
         }
@@ -99,7 +118,7 @@ class LoginFragment : Fragment() {
      *   the FirebaseAuth class. If the sign-in is successful, it starts
      *   the OwnerDashboard activity. Otherwise, it displays an error message.
      */
-    private fun firebaseSignIn() {
+    private fun ownerSignIn() {
         firebaseAuth.signInWithEmailAndPassword(username.text.toString(), password.text.toString()).addOnCompleteListener{
             if (it.isSuccessful) {
                 val intent = Intent(context, OwnerDashboard::class.java)
@@ -108,6 +127,32 @@ class LoginFragment : Fragment() {
                 Toast.makeText(context, "Login Failed. Please try again.", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+    private fun clientSignIn() {
+        firebaseAuth.signInWithEmailAndPassword(username.text.toString(), password.text.toString()).addOnCompleteListener{
+            if (it.isSuccessful) {
+                val intent = Intent(context, ClientDashboard::class.java)
+                startActivity(intent)
+            } else {
+                Toast.makeText(context, "Login Failed. Please try again.", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private val userListener = object:ValueEventListener {
+        override fun onDataChange(snapshot: DataSnapshot) {
+            if (snapshot.exists()){
+                snapshot.child("Users")
+                snapshot.children.forEach { child ->
+                    userType = child.child("userType").value.toString()
+                    validateForm()
+                }
+            }
+        }
+        override fun onCancelled(error: DatabaseError) {
+            Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
+        }
+
     }
 }
 
