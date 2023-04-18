@@ -12,12 +12,6 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:orientation="vertical">
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/test"
-            android:text="Press Me">
-        </Button>
 
         <ImageView
             android:layout_width="131dp"
@@ -89,7 +83,6 @@
                 android:text="Register"
                 android:layout_toLeftOf="@id/btn_login"
                 android:layout_marginEnd="40dp"/>
-
         </RelativeLayout>
     </LinearLayout>
 </ScrollView>
