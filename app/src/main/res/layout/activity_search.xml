@@ -6,4 +6,10 @@
     android:layout_height="match_parent"
     tools:context=".SearchActivity">
 
+    <ListView
+        android:id="@+id/searchListView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:listitem="@layout/search_item"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -78,7 +78,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
-                    android:background="@drawable/background_edittext"
+                    android:background="@drawable/background_edittext_appoint"
                     android:hint="Enter your bio"
                     android:padding="8dp" />
 
