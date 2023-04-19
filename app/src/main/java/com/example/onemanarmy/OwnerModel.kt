@@ -12,5 +12,6 @@ data class OwnerModel(
     var businessPhone: String? = null,
     var serviceProvided: String? = null,
     var businessBio: String? = null,
-    var businessSkills: String? = null
+    var businessSkills: String? = null,
+    var profilePic: Int? = null,
 )
