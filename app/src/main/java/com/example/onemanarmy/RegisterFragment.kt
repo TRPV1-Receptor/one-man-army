@@ -9,9 +9,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
+import com.example.onemanarmy.databinding.ActivityMainBinding
+import com.example.onemanarmy.databinding.FragmentRegister1Binding
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -44,6 +45,8 @@ class RegisterFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
     private lateinit var dbRef: DatabaseReference
     private lateinit var usrType: String
+
+    //private lateinit var binding : FragmentRegister1Binding
 
     // TODO: Rename and change types of parameters
     private var param1: String? = null
@@ -241,11 +244,16 @@ class RegisterFragment : Fragment() {
                 return false
             }
         }
-        return if (username.text.toString().matches(emailPattern)) {
-            true
-        } else {
+        return if (!username.text.toString().matches(emailPattern)) {
             username.error = "Please Enter Valid Email Id"
             false
+        } else {
+            searchUsername(username.text.toString()) { exists ->
+                if (exists) {
+                    username.error = "Username already in use"
+                }
+            }
+            true
         }
     }
 
@@ -313,6 +321,33 @@ class RegisterFragment : Fragment() {
                 Toast.makeText(context, "Error ${err.message}", Toast.LENGTH_LONG).show()
             }
     }
+    private fun searchUsername(username: String, callback: (Boolean) -> Unit) {
+        val database = FirebaseDatabase.getInstance()
+        val usersRef = database.getReference("Users")
+
+        usersRef.orderByChild("userName").equalTo(username)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        // Username exists
+                        for (childSnapshot in dataSnapshot.children) {
+                            val user = childSnapshot.getValue(UserModel::class.java)
+                            Toast.makeText(context, "Username already in use", Toast.LENGTH_SHORT).show()
+                        }
+                        callback(false)
+                    } else {
+                        callback(true)
+                    }
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                    // Handle database error
+                    println("The read failed:" + databaseError.code)
+                    callback(false)
+                }
+            })
+    }
+
 }
 
 
