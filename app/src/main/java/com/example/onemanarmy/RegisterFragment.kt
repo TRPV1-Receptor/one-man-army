@@ -221,6 +221,7 @@ class RegisterFragment : Fragment() {
 
     //logic to ensure that the user enters valid input values before registering their account
     private fun validateEmptyForm(): Boolean {
+
         when {
             TextUtils.isEmpty(firstName.text.toString().trim()) -> {
                 firstName.error = "Please Enter First Name"
@@ -251,12 +252,23 @@ class RegisterFragment : Fragment() {
                 return false
             }
         }
-        return if (!username.text.toString().matches(emailPattern)) {
+        if (!username.text.toString().matches(emailPattern)) {
             username.error = "Please Enter Valid Email Id"
             false
         } else {
             true
         }
+        var exists = false
+        searchUsername(username.text.toString()) { result ->
+            exists = result
+        }
+
+        if (exists) {
+            username.error = "Please use a different username FORM"
+            return false
+        }
+
+        return true
     }
 
         //To be used with Customer Registration Page
