@@ -4,26 +4,46 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.SearchView
 import android.widget.Toast
 import com.example.onemanarmy.databinding.ActivitySearchBinding
+import com.google.android.material.search.SearchBar
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import java.security.acl.Owner
+import java.util.*
+import java.util.Locale.filter
+import kotlin.collections.ArrayList
 
 class SearchActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySearchBinding
     private lateinit var userArrayList: ArrayList<OwnerModel>
     private lateinit var allOwners: ArrayList<Map<String,String>>
+    private var filtered = ArrayList<OwnerModel>()
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        allOwners = ArrayList()
+        userArrayList = ArrayList()
+
+
         val database = FirebaseDatabase.getInstance()
         val usersRef = database.getReference("Users")
+
+        val name = ArrayList<String>()
+        val service = ArrayList<String>()
+        val busPhone = ArrayList<String>()
+        val busName = ArrayList<String>()
+        val email = ArrayList<String>()
+        val address = ArrayList<String>()
 
 
         //Pulling all accounts from database that are owners
@@ -35,103 +55,96 @@ class SearchActivity : AppCompatActivity() {
                             allOwners.add(child.value as Map<String, String>)
                         }
                     }
+                    for(owner in allOwners){
+                        Log.d("Owner", owner.toString())
+                        name.add(owner["firstName"].toString())
+                        service.add(owner["serviceProvided"].toString())
+                        busPhone.add(owner["businessPhone"].toString())
+                        busName.add(owner["businessName"].toString())
+                        email.add(owner["businessEmail"].toString())
+                        address.add(owner["businessAddress"].toString())
+                    }
+                    for(i in name.indices){
+                        val user = OwnerModel()
+                        Log.d("For Loop", name[i])
+                        user.firstName = name[i]
+                        user.serviceProvided = service[i]
+                        userArrayList.add(user)
+                    }
+
                 }
                 override fun onCancelled(error: DatabaseError) {}
             })
 
-        allOwners = ArrayList()
+        val adapter = OwnerAdapter(this,userArrayList)
 
-        val button = findViewById<Button>(R.id.test)
 
-        button.setOnClickListener {
+        val testAdapter : ArrayAdapter<String> = ArrayAdapter(
+            this,
+            android.R.layout.simple_list_item_1,
+            name
+        )
+
+        binding.searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(query: String?): Boolean {
+
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                val filteredList = ArrayList<OwnerModel>()
+                for (owner in allOwners){
+                    if (owner["firstName"].toString().lowercase()?.contains(newText?.lowercase().toString()) == true){
+                        filteredList.add(OwnerModel(firstName = owner["firstName"], serviceProvided = owner["serviceProvided"]))
+                    }
+                }
+                adapter.update(filteredList)
+                binding.searchListView.adapter=adapter
+                return false
+            }
+
+        })
+
+        binding.searchListView.adapter = adapter
+        binding.searchListView.isClickable = true
+
+
+
+        binding.searchListView.setOnItemClickListener { adapterView, view, position, item ->
+
+            Log.d("item",item.toString())
+            Log.d("position",position.toString())
+
+
+            val userClicked = adapterView.getItemAtPosition(position) as OwnerModel
+
+            val user = OwnerModel()
 
             for(owner in allOwners){
-                Log.d("Owner",owner.toString())
+                if (userClicked.firstName?.lowercase().toString() == owner["firstName"]?.lowercase()){
+                    user.firstName = owner["firstName"]
+                    user.businessPhone = owner["businessPhone"]
+                    user.businessName = owner["businessName"]
+                    user.serviceProvided = owner["serviceProvided"]
+                    user.businessEmail = owner["businessEmail"]
+                    user.businessAddress = owner["businessAddress"]
+
+                }
             }
-        }
-
-
-
-        val imageId = intArrayOf(
-            R.drawable.elias,
-            R.drawable.austin,
-            R.drawable.michael,
-        )
-
-        val name = arrayOf(
-            "Elias",
-            "Austin",
-            "Michael",
-        )
-
-        val service = arrayOf(
-            "Auror",
-            "Potions",
-            "Wand Making"
-        )
-
-        val busPhone = arrayOf(
-            "252-333-4567",
-            "252-123-4321",
-            "252-765-5678",
-        )
-
-        val busName = arrayOf(
-            "Elias Business",
-            "Austin Business",
-            "Michael Business",
-        )
-
-        val email = arrayOf(
-            "Elias@onemanarmy.com",
-            "Austing@onemanarmy.com",
-            "Michael@onemanarmy.com",
-        )
-
-        val address = arrayOf(
-            "123 Fairy Lane",
-            "999 Spoon Drive",
-            "456 Larry Court",
-        )
-
-        userArrayList = ArrayList()
-
-        for(i in name.indices){
-            val user = OwnerModel()
-            user.firstName = name[i]
-            user.serviceProvided = service[i]
-            user.businessPhone = busPhone[i]
-            user.businessName = busName[i]
-            user.businessEmail = email[i]
-            user.businessAddress = address[i]
-            user.profilePic = imageId[i]
-
-            userArrayList.add(user)
-        }
-
-        binding.searchListView.isClickable = true
-        binding.searchListView.adapter = OwnerAdapter(this, userArrayList)
-        binding.searchListView.setOnItemClickListener { _, _, position, _ ->
-
-            val name = name[position]
-            val phone = busPhone[position]
-            val busName = busName[position]
-            val image = imageId[position]
-            val service = service[position]
-            val email = email[position]
-            val address = address[position]
 
             val intent = Intent(this,AccountActivity::class.java)
 
-            intent.putExtra("name", name)
-            intent.putExtra("phone",phone)
-            intent.putExtra("businessName", busName)
-            intent.putExtra("profilePic",image)
-            intent.putExtra("service",service)
-            intent.putExtra("email",email)
-            intent.putExtra("address",address)
+            intent.putExtra("name", user.firstName.toString())
+            intent.putExtra("phone",user.businessPhone.toString())
+            intent.putExtra("businessName", user.businessName.toString())
+            intent.putExtra("service",user.serviceProvided.toString())
+            intent.putExtra("email",user.businessEmail.toString())
+            intent.putExtra("address",user.businessAddress.toString())
 
             startActivity(intent)
         }
+
     }
+
+
 }
