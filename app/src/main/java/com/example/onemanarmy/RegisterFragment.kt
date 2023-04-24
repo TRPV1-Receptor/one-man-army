@@ -9,8 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
-import com.example.onemanarmy.databinding.ActivityMainBinding
-import com.example.onemanarmy.databinding.FragmentRegister1Binding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 
@@ -107,16 +105,22 @@ class RegisterFragment : Fragment() {
         }
         //next button on business register
         view1.findViewById<Button>(R.id.btn_next_2).setOnClickListener {
-            requireActivity().run {
-                firebaseSignUp()
-                //TODO Have page go to profile setup.
+            if (validateBusinessRegisterForm()){
+                requireActivity().run {
+                    firebaseSignUp()
+                    saveOwnerData()
+                    Toast.makeText(context,"Hello There", Toast.LENGTH_SHORT).show()
+                    startActivity(Intent(this,ProfileSetupActivity::class.java))
+
+                }
             }
+
         }
 
         //Register Next button, directs to which page by usertype
         view.findViewById<Button>(R.id.btn_next_1).setOnClickListener {
             if(usrType == "owner"){
-                if(validateEmptyForm()){
+                if(validateRegisterForm()){
                     searchUsername(username.text.toString()) { exists ->
                         if (exists) {
                             username.error = "Username already in use"
@@ -131,7 +135,7 @@ class RegisterFragment : Fragment() {
                 }
             }else{
                 requireActivity().run {
-                    if (validateEmptyForm()){
+                    if (validateRegisterForm()){
                         firebaseSignUp()
                         saveCustomerData()
                         startActivity(Intent(this, ClientDashboard::class.java))
@@ -220,7 +224,7 @@ class RegisterFragment : Fragment() {
 
 
     //logic to ensure that the user enters valid input values before registering their account
-    private fun validateEmptyForm(): Boolean {
+    private fun validateRegisterForm(): Boolean {
         when {
             TextUtils.isEmpty(firstName.text.toString().trim()) -> {
                 firstName.error = "Please Enter First Name"
@@ -257,6 +261,41 @@ class RegisterFragment : Fragment() {
         } else {
             true
         }
+    }
+
+    private fun validateBusinessRegisterForm(): Boolean{
+        when{
+            TextUtils.isEmpty(busName.text.toString().trim()) -> {
+                busName.error = "Required Field"
+                return false
+            }
+
+            TextUtils.isEmpty(busAddress.text.toString().trim()) -> {
+                busAddress.error = "Required Field"
+                return false
+            }
+
+            TextUtils.isEmpty(busEmail.text.toString().trim()) -> {
+                busEmail.error = "Required Field"
+                return false
+            }
+
+            TextUtils.isEmpty(busPhone.text.toString().trim()) -> {
+                busPhone.error = "Required Field"
+                return false
+            }
+        }
+        if(service.selectedItem == "Service Provided"){
+            Toast.makeText(context,"Please select service provided", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        if(!busEmail.text.toString().matches(emailPattern)){
+            busEmail.error = "Please Enter Valid Email"
+            return false
+        }
+
+        return true
     }
 
         //To be used with Customer Registration Page
@@ -298,7 +337,7 @@ class RegisterFragment : Fragment() {
 
             val userId = dbRef.push().key!!
 
-            val user = OwnerModel()
+            val user = OwnerModel(userId,userName,firstName,lastName,usrType,businessName,busAddress,busEmail,busPhone,service)
 
             dbRef.child(userId).setValue(user)
                 .addOnCompleteListener {
