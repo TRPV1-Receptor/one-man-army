@@ -38,6 +38,7 @@ class RegisterFragment : Fragment() {
     private lateinit var service: Spinner
     private lateinit var items: Array<String>
     private lateinit var userType: RadioGroup
+    private var flag = true
     //private lateinit var userType: String
 
 
@@ -116,11 +117,17 @@ class RegisterFragment : Fragment() {
         view.findViewById<Button>(R.id.btn_next_1).setOnClickListener {
             if(usrType == "owner"){
                 if(validateEmptyForm()){
-                    firebaseSignUp()
-                    //TODO We need these next 3 lines not to execute if they already in system
-                    saveCustomerData()
-                    container?.removeAllViews()
-                    container?.addView(view1)
+                    searchUsername(username.text.toString()) { exists ->
+                        if (exists) {
+                            username.error = "Username already in use"
+                        }
+                        else{
+                            container?.removeAllViews()
+                            container?.addView(view1)
+                        }
+                    }
+
+
                 }
             }else{
                 requireActivity().run {
@@ -248,11 +255,6 @@ class RegisterFragment : Fragment() {
             username.error = "Please Enter Valid Email Id"
             false
         } else {
-            searchUsername(username.text.toString()) { exists ->
-                if (exists) {
-                    username.error = "Username already in use"
-                }
-            }
             true
         }
     }
@@ -287,6 +289,12 @@ class RegisterFragment : Fragment() {
             val lastName = lastName.text.toString()
             val password = password.text.toString()
             val usrType = usrType
+
+            val businessName = busName.text.toString()
+            val busAddress = busAddress.text.toString()
+            val busEmail = busEmail.text.toString()
+            val busPhone = busPhone.text.toString()
+            val service = service.selectedItem.toString()
 
             val userId = dbRef.push().key!!
 
@@ -330,13 +338,9 @@ class RegisterFragment : Fragment() {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     if (dataSnapshot.exists()) {
                         // Username exists
-                        for (childSnapshot in dataSnapshot.children) {
-                            val user = childSnapshot.getValue(UserModel::class.java)
-                            Toast.makeText(context, "Username already in use", Toast.LENGTH_SHORT).show()
-                        }
-                        callback(false)
-                    } else {
                         callback(true)
+                    } else {
+                        callback(false)
                     }
                 }
 

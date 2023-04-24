@@ -21,7 +21,7 @@ class CurrentDayDecorator(context: Activity?, currentDay : CalendarDay) : DayVie
     }
 
     init {
-        drawable = ContextCompat.getDrawable(context!!,R.drawable.checkbox_off_background)
+        drawable = ContextCompat.getDrawable(context!!, R.drawable.checkbox_off_background)
     }
 
 }

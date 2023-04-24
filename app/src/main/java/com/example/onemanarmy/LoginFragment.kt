@@ -64,6 +64,13 @@ class LoginFragment : Fragment() {
 
         }
 
+        view.findViewById<Button>(R.id.test).setOnClickListener {
+            requireActivity().run {
+                startActivity(Intent(this,SearchActivity::class.java))
+            }
+
+        }
+
         /**
          *  "Login" button (btn_login) that calls the validateForm function.
          */

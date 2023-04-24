@@ -62,12 +62,12 @@ class AppointmentActivity : AppCompatActivity(){
                 val appt = Appointment(customerName,time,customerName,address,selectedDate)
                 appointmentList.add(appt)
 
+
                 calendar.addDecorators(selectedDate?.let {
                     CurrentDayDecorator(this@AppointmentActivity,
                         it
                     )
                 })
-                updateData(appt.date)
             }
             builder.create().show()
         }else{
@@ -238,7 +238,7 @@ class AppointmentAdapter(private val items:MutableList<Appointment>) : RecyclerV
         }
     }
 
-    private fun addItem(appointment: Appointment){
+     fun addItem(appointment: Appointment){
         items.add(appointment)
         notifyItemInserted(items.size-1)
     }
