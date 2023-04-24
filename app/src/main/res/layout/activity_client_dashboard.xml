@@ -283,7 +283,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
-                    android:text="Not Sure Yet"
+                    android:text="FAQ"
                     android:textColor="#6200ee"
                     android:textSize="18sp"
                     app:layout_constraintBottom_toBottomOf="parent"
