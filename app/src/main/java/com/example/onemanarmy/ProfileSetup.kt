@@ -18,6 +18,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.view.View
 import android.widget.AdapterView.OnItemClickListener
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
 import com.google.firebase.ktx.Firebase
 
 class ProfileSetupActivity : AppCompatActivity(), OnItemClickListener{
@@ -36,6 +37,12 @@ class ProfileSetupActivity : AppCompatActivity(), OnItemClickListener{
     private lateinit var addSkillButton: Button
     private lateinit var selectedSkillsListView: ListView
     private lateinit var saveButton: Button
+    //for use of grabbing unique ID
+    private lateinit var userName: String
+    private lateinit var userID: String
+
+    private lateinit var auth: FirebaseAuth
+    private lateinit var dbRef: DatabaseReference
 
     private lateinit var skillsAdapter: ArrayAdapter<String>
     private var selectedSkillsList= arrayListOf<String>()
@@ -43,6 +50,11 @@ class ProfileSetupActivity : AppCompatActivity(), OnItemClickListener{
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile_setup)
+
+        //grab currently signed in user's email
+        userName = FirebaseAuth.getInstance().currentUser?.email.toString()
+        userID = FirebaseAuth.getInstance().currentUser?.uid.toString()
+
 
         // Find views
         profilePictureImageView = findViewById(R.id.profile_picture_image_view)
@@ -62,7 +74,7 @@ class ProfileSetupActivity : AppCompatActivity(), OnItemClickListener{
 
         val button = findViewById<TextView>(R.id.profilePictureTextView)
         button.setOnClickListener{
-            val userID = FirebaseAuth.getInstance().currentUser?.email
+            val userID = FirebaseAuth.getInstance().currentUser?.uid
             Toast.makeText(this,userID,Toast.LENGTH_SHORT).show()
         }
 
@@ -138,11 +150,53 @@ class ProfileSetupActivity : AppCompatActivity(), OnItemClickListener{
         val profilePicture = (profilePictureImageView.drawable as BitmapDrawable).bitmap // get the user's selected profile picture
         val selectedSkills = selectedSkillsList // get the user's selected skills
 
-        // TODO: Save the user's profile picture and selected skills to their account information
+        getUidFromUserName(userName) { uid ->
+            if (uid != null) {
+                // Handle the uid value
+                val userAccountRef = FirebaseDatabase.getInstance().getReference("Users").child(uid)
 
+                val bioRef = userAccountRef.child("Biography")
+                bioRef.setValue(bio)
+
+                // Save the selected skills under the "Skills" field of the user's account node
+                val skillsRef = userAccountRef.child("Skills")
+                for (skill in selectedSkills) {
+                    skillsRef.push().setValue(skill)
+                        .addOnCompleteListener {
+                            Toast.makeText(this, "Skills updated", Toast.LENGTH_LONG).show()
+                        }
+                        .addOnFailureListener { err ->
+                            Toast.makeText(this, "Error ${err.message}", Toast.LENGTH_LONG).show()
+                        }
+                }
+            } else {
+                // Handle the case when no user with the matching userName was found
+                println("User not found")
+            }
+        }
         // Finish activity and go back to previous screen
         finish()
     }
+
+    private fun getUidFromUserName(userName: String, callback: (String?) -> Unit) {
+        val usersRef = FirebaseDatabase.getInstance().getReference("Users")
+
+        usersRef.orderByChild("userName").equalTo(userName).addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    val userNode = snapshot.children.first()
+                    val uid = userNode.key
+                    callback(uid) // Return the uid via the callback
+                } else {
+                    callback(null) // User with the matching userName not found, return null
+                }
+            }
+            override fun onCancelled(error: DatabaseError) {
+                callback(null) // Handle the error, return null
+            }
+        })
+    }
+
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)

@@ -36,6 +36,7 @@ class RegisterFragment : Fragment() {
     private lateinit var service: Spinner
     private lateinit var items: Array<String>
     private lateinit var userType: RadioGroup
+    private lateinit var userID: String
     private var flag = true
     //private lateinit var userType: String
 
@@ -89,6 +90,8 @@ class RegisterFragment : Fragment() {
         busPhone = view1.findViewById(R.id.bus_number)
         service = view1.findViewById(R.id.service)
 
+        //userID = FirebaseAuth.getInstance().currentUser.email.toString()
+
         items = resources.getStringArray(R.array.services)
 
         val buttonNext = view.findViewById<Button>(R.id.btn_next_1)
@@ -111,6 +114,7 @@ class RegisterFragment : Fragment() {
                     saveOwnerData()
                     Toast.makeText(context,"Hello There", Toast.LENGTH_SHORT).show()
                     startActivity(Intent(this,ProfileSetupActivity::class.java))
+                    //intent.putExtra("userId", userID)
 
                 }
             }
@@ -255,12 +259,23 @@ class RegisterFragment : Fragment() {
                 return false
             }
         }
-        return if (!username.text.toString().matches(emailPattern)) {
+        if (!username.text.toString().matches(emailPattern)) {
             username.error = "Please Enter Valid Email Id"
             false
         } else {
             true
         }
+        var exists = false
+        searchUsername(username.text.toString()) { result ->
+            exists = result
+        }
+
+        if (exists) {
+            username.error = "Please use a different username FORM"
+            return false
+        }
+
+        return true
     }
 
     private fun validateBusinessRegisterForm(): Boolean{
@@ -309,6 +324,7 @@ class RegisterFragment : Fragment() {
             val userType = usrType
 
             val userId = dbRef.push().key!!
+
             val user = UserModel(userId, userName, firstName, lastName, password, userType)
 
             dbRef.child(userId).setValue(user)
