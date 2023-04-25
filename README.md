@@ -2,7 +2,7 @@
 
 ## Project Description
 
-One Man Army is a mobile application that allows small business owners to streamline their record-keeping by digitizing receipts and invoices, tracking expenses, and monitoring their finances
+The One Man Army mobile application provides a platform for small business owners to display their expertise and advertise their services. Additionally, it enables individuals who lack certain skill sets to locate competent professionals and outsource work to them.
 ______________________________________________________________
 
 ## Development Team
