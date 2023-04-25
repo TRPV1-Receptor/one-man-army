@@ -27,26 +27,17 @@
             android:name=".SearchActivity"
             android:exported="false" />
         <activity
-            android:name=".test"
-            android:exported="false" />
-        <activity
             android:name=".ClientDashboard"
-            android:exported="false" />
-        <activity
-            android:name=".DocScanner_FirstPage_Temp"
-            android:exported="false" />
-        <activity
-            android:name=".UserTypeActivity"
             android:exported="false" />
         <activity
             android:name=".Availibility"
             android:exported="false" />
         <activity
-            android:name=".BusinessRegister"
-            android:exported="false" />
-        <activity
             android:name=".ProfileSetupActivity"
             android:exported="false" />
+        <activity
+            android:name=".FAQ"
+            android:exported="false"/>
         <activity
             android:name=".SettingsActivity"
             android:exported="false" />
@@ -60,9 +51,6 @@
             android:name=".ReceiptCreatorActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustPan" />
-        <activity
-            android:name=".DocScannerActivity"
-            android:exported="false" />
         <activity
             android:name=".AppointmentActivity"
             android:exported="false" />

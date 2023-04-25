@@ -94,7 +94,9 @@ class SearchActivity : AppCompatActivity() {
             override fun onQueryTextChange(newText: String?): Boolean {
                 val filteredList = ArrayList<OwnerModel>()
                 for (owner in allOwners){
-                    if (owner["firstName"].toString().lowercase()?.contains(newText?.lowercase().toString()) == true){
+                    if (owner["firstName"].toString().lowercase().contains(newText?.lowercase().toString()) || owner["serviceProvided"].toString().lowercase()
+                            .contains(newText?.lowercase().toString())
+                    ){
                         filteredList.add(OwnerModel(firstName = owner["firstName"], serviceProvided = owner["serviceProvided"]))
                     }
                 }
@@ -107,8 +109,6 @@ class SearchActivity : AppCompatActivity() {
 
         binding.searchListView.adapter = adapter
         binding.searchListView.isClickable = true
-
-
 
         binding.searchListView.setOnItemClickListener { adapterView, view, position, item ->
 

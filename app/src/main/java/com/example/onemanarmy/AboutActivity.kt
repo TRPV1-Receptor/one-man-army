@@ -39,8 +39,5 @@ class AboutActivity : AppCompatActivity(){
                 Toast.makeText(this,"Required App is not installed",Toast.LENGTH_SHORT).show()
             }
         }
-
-
     }
-
 }

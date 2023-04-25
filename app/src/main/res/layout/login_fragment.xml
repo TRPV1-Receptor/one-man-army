@@ -102,16 +102,6 @@
             android:text="Login"
             android:textColor="#ffffff"
             android:textSize="18sp" />
-        <Button
-            android:id="@+id/test"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="64dp"
-            android:layout_marginRight="64dp"
-            android:background="@drawable/background_login_btn"
-            android:text="test"
-            android:textColor="#ffffff"
-            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/btn_register"
