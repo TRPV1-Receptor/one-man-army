@@ -3,6 +3,7 @@ package com.example.onemanarmy
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageView
+import android.widget.Toast
 import com.example.onemanarmy.databinding.ActivityAccountBinding
 
 class AccountActivity : AppCompatActivity() {
@@ -31,6 +32,7 @@ class AccountActivity : AppCompatActivity() {
         if(intent.hasExtra("user")){
             val userIntent = intent.extras
             currentUser = userIntent?.getSerializable("user") as OwnerModel
+            Toast.makeText(applicationContext, currentUser.businessEmail.toString(),Toast.LENGTH_SHORT).show()
 
              /**
              *Code for binding the account page with currently logged in user goes here

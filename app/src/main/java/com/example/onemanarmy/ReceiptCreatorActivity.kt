@@ -58,7 +58,7 @@ class ReceiptCreatorActivity : AppCompatActivity() {
 
 
     private lateinit var currentUser : OwnerModel
-    private var db = FirebaseDatabase.getInstance().getReference("Users")
+    private var usersNode = FirebaseDatabase.getInstance().getReference("Users")
 
     @SuppressLint("ObsoleteSdkInt")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -87,7 +87,8 @@ class ReceiptCreatorActivity : AppCompatActivity() {
 
         val button = findViewById<TextView>(R.id.receipt_button)
         button.setOnClickListener{
-            Toast.makeText(this,currentUser.userId.toString(),Toast.LENGTH_SHORT).show()
+            val curUserNode = usersNode.child(currentUser.userId.toString())
+            //Toast.makeText(this,curUserNode.child("userType"),Toast.LENGTH_SHORT).show()
         }
 
         //checks if text boxes are empty before adding another one

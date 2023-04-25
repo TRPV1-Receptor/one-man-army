@@ -18,7 +18,6 @@ class OwnerDashboard : AppCompatActivity() {
 
     private lateinit var user : Map<String,String>
     private val userEmail = FirebaseAuth.getInstance().currentUser?.email
-    private val userID = FirebaseAuth.getInstance().currentUser?.uid
     private val database = FirebaseDatabase.getInstance()
     private val usersRef = database.getReference("Users")
 
