@@ -11,6 +11,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.renderscript.Sampler.Value
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -20,6 +21,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -29,8 +31,14 @@ import androidx.core.view.get
 import androidx.core.view.iterator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import java.io.File
 import java.io.FileOutputStream
+import java.security.acl.Owner
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -39,21 +47,33 @@ class ReceiptCreatorActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: ReceiptAdapter
 
+    private lateinit var user : List<CharSequence>
+
     var receiptList = mutableListOf<ReceiptItem>()
 
-    lateinit var bmp:Bitmap
-    lateinit var scaledbmp:Bitmap
+    private lateinit var bmp:Bitmap
+    private lateinit var scaledbmp:Bitmap
 
     private var PERMISSION_CODE = 101
 
     val text = "Must provide atleast one service!"
     private val duration = Toast.LENGTH_SHORT
-    private val emailRegex = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}\$".toRegex()
+    private val emailRegex = "^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}\$".toRegex()
+
+    private lateinit var currentUser : OwnerModel
+
+
 
     @SuppressLint("ObsoleteSdkInt")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_receipt_creator)
+
+        val userIntent = intent.extras
+        currentUser = userIntent?.getSerializable("user") as OwnerModel
+
+       Log.d("UserIntent", currentUser.toString())
+
 
         bmp = BitmapFactory.decodeResource(resources,R.drawable.onemanarmylogo)
         scaledbmp = Bitmap.createScaledBitmap(bmp, 140, 140, false)
@@ -71,6 +91,11 @@ class ReceiptCreatorActivity : AppCompatActivity() {
         val backButton = findViewById<ImageView>(R.id.back)
         backButton.setOnClickListener {
             finish()
+        }
+
+        val button = findViewById<TextView>(R.id.receipt_button)
+        button.setOnClickListener{
+            Toast.makeText(this,user.toString(),Toast.LENGTH_SHORT).show()
         }
 
         //checks if text boxes are empty before adding another one

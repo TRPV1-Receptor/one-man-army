@@ -14,4 +14,4 @@ data class OwnerModel(
     var businessBio: String? = null,
     var businessSkills: String? = null,
     var profilePic: Int? = null,
-)
+) : java.io.Serializable

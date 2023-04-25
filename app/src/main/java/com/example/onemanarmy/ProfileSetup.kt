@@ -17,6 +17,8 @@ import java.io.FileNotFoundException
 import android.graphics.drawable.BitmapDrawable
 import android.view.View
 import android.widget.AdapterView.OnItemClickListener
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.ktx.Firebase
 
 class ProfileSetupActivity : AppCompatActivity(), OnItemClickListener{
 
@@ -57,6 +59,12 @@ class ProfileSetupActivity : AppCompatActivity(), OnItemClickListener{
         skillsAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, skills)
         skillsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         skillsSpinner.adapter = skillsAdapter
+
+        val button = findViewById<TextView>(R.id.profilePictureTextView)
+        button.setOnClickListener{
+            val userID = FirebaseAuth.getInstance().currentUser?.email
+            Toast.makeText(this,userID,Toast.LENGTH_SHORT).show()
+        }
 
 
 

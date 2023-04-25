@@ -22,6 +22,9 @@ class SettingsActivity : AppCompatActivity() {
     private lateinit var binding: AboutBinding
     private lateinit var binding2: ActivitySettingsBinding
 
+    private lateinit var currentUser : OwnerModel
+
+
 
     companion object {
         val IMAGE_REQUEST_CODE = 1_000
@@ -38,6 +41,9 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         super.onCreate(savedInstanceState)
+
+        val userIntent = intent.extras
+        currentUser = userIntent?.getSerializable("user") as OwnerModel
 
 
         /////////////This code is for contact form////////////

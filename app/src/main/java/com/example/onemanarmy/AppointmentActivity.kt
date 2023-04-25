@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView
+import org.w3c.dom.Text
 
 class AppointmentActivity : AppCompatActivity(){
 
@@ -22,6 +23,9 @@ class AppointmentActivity : AppCompatActivity(){
 
 
     private var appointmentList = mutableListOf<Appointment>()
+
+    private lateinit var currentUser : OwnerModel
+
 
     //Format the date to make it pretty for the appointment creator
     private fun getDate(calendar:MaterialCalendarView): String {
@@ -57,10 +61,12 @@ class AppointmentActivity : AppCompatActivity(){
                 val customerZip = popUpView.findViewById<EditText>(R.id.customerZip).text.toString()
 
                 val time = getTime(timepicker.hour,timepicker.minute)
+                Toast.makeText(this,timepicker.hour.toString(),Toast.LENGTH_SHORT).show()
                 val address = "$customerStreet\n$customerCity,$customerZip"
 
                 val appt = Appointment(customerName,time,customerName,address,selectedDate)
                 appointmentList.add(appt)
+                adapter.updateData(appointmentList)
 
 
                 calendar.addDecorators(selectedDate?.let {
@@ -111,7 +117,8 @@ class AppointmentActivity : AppCompatActivity(){
         calendar = findViewById(R.id.calendarView)
         recyclerView = findViewById(R.id.apptRecycler)
 
-
+        val userIntent = intent.extras
+        currentUser = userIntent?.getSerializable("user") as OwnerModel
 
         //Initializing the adapter and the layout manager
         adapter = AppointmentAdapter(mutableListOf(Appointment()))
@@ -157,6 +164,8 @@ fun getTime(hour:Int,minute:Int): String {
             val newHour = hour-12
             return "$newHour:$minute PM"
         }
+    }else if  (hour == 0){
+        return "12:$minute AM"
     } else{
         if (minute < 10){
             val newMin = "0$minute"
@@ -184,6 +193,7 @@ class AppointmentAdapter(private val items:MutableList<Appointment>) : RecyclerV
     }
     class AppointmentViewHolder(itemView:View, listener: onItemClickListener) : RecyclerView.ViewHolder(itemView){
         var appointmentTitle : TextView = itemView.findViewById(R.id.appointTitle)
+        var appointmentTime : TextView = itemView.findViewById(R.id.appointTime)
         init {
             itemView.setOnClickListener{
                 listener.onItemClick(adapterPosition)
@@ -213,7 +223,8 @@ class AppointmentAdapter(private val items:MutableList<Appointment>) : RecyclerV
         when(holder) {
             is AppointmentViewHolder ->{
                 val item = items[position]
-                holder.appointmentTitle.text = item.title + "\n" + item.startTime
+                holder.appointmentTitle.text = item.title
+                holder.appointmentTime.text = item.startTime
             }
             is EmptyViewHolder ->{
                 holder.emptyView.text ="There are no appointments today"
