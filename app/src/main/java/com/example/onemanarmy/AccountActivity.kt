@@ -32,12 +32,20 @@ class AccountActivity : AppCompatActivity() {
         if(intent.hasExtra("user")){
             val userIntent = intent.extras
             currentUser = userIntent?.getSerializable("user") as OwnerModel
-            Toast.makeText(applicationContext, currentUser.businessEmail.toString(),Toast.LENGTH_SHORT).show()
 
-             /**
-             *Code for binding the account page with currently logged in user goes here
-             */
+            var profilePic = currentUser.profilePic
 
+            if(profilePic == null){
+                profilePic = R.drawable.profile_icon
+            }
+
+            binding.profileName.text = currentUser.firstName
+            binding.profilePhone.text = currentUser.businessPhone
+            binding.profileBusinessName.text = currentUser.businessName
+            binding.profilePicture.setImageResource(profilePic)
+            binding.serviceOffered.text = currentUser.serviceProvided
+            binding.profileEmail.text = currentUser.businessEmail
+            binding.profileAddress.text = currentUser.businessAddress
 
         }else{
             //grabbng the Information from the intent

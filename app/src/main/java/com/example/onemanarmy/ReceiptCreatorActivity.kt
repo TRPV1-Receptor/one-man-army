@@ -11,7 +11,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
-import android.renderscript.Sampler.Value
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -31,16 +30,18 @@ import androidx.core.view.get
 import androidx.core.view.iterator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
+import com.google.android.gms.auth.api.signin.internal.Storage
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.ktx.storage
 import java.io.File
 import java.io.FileOutputStream
-import java.security.acl.Owner
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.properties.Delegates
 
 
 class ReceiptCreatorActivity : AppCompatActivity() {
@@ -48,25 +49,36 @@ class ReceiptCreatorActivity : AppCompatActivity() {
     private lateinit var adapter: ReceiptAdapter
     private lateinit var bmp:Bitmap
     private lateinit var scaledbmp:Bitmap
-
-    private val duration = Toast.LENGTH_SHORT
-    private val emailRegex = "^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}\$".toRegex()
-    private var PERMISSION_CODE = 101
-
-    var receiptList = mutableListOf<ReceiptItem>()
-    val text = "Must provide atleast one service!"
-
-
     private lateinit var currentUser : OwnerModel
-    private var usersNode = FirebaseDatabase.getInstance().getReference("Users")
+    private lateinit var storage : FirebaseStorage
+    private lateinit var storageRef : StorageReference
+    private lateinit var usersNode : DatabaseReference
+    private lateinit var receiptList :  MutableList<ReceiptItem>
+
+    private var PERMISSION_CODE = 101
 
     @SuppressLint("ObsoleteSdkInt")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_receipt_creator)
 
+
+        //references to storage
+        storage = Firebase.storage
+        storageRef = storage.reference
+
+        //getting current user
         val userIntent = intent.extras
         currentUser = userIntent?.getSerializable("user") as OwnerModel
+
+        Toast.makeText(this,currentUser.firstName.toString(),Toast.LENGTH_SHORT).show()
+
+        usersNode = FirebaseDatabase.getInstance().getReference("Users")
+
+        receiptList = mutableListOf()
+
+        val emailRegex = "^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}\$".toRegex()
+
 
         bmp = BitmapFactory.decodeResource(resources,R.drawable.onemanarmylogo)
         scaledbmp = Bitmap.createScaledBitmap(bmp, 140, 140, false)
@@ -87,8 +99,11 @@ class ReceiptCreatorActivity : AppCompatActivity() {
 
         val button = findViewById<TextView>(R.id.receipt_button)
         button.setOnClickListener{
-            val curUserNode = usersNode.child(currentUser.userId.toString())
-            //Toast.makeText(this,curUserNode.child("userType"),Toast.LENGTH_SHORT).show()
+            val currentUserNode = usersNode.child(currentUser.userId.toString())
+            val allReceiptsNode = currentUserNode.child("Receipts")
+            val receiptNode = allReceiptsNode.child("dae")
+            receiptNode.setValue("Ho There")
+
         }
 
         //checks if text boxes are empty before adding another one
@@ -110,7 +125,7 @@ class ReceiptCreatorActivity : AppCompatActivity() {
         val removeButton = findViewById<Button>(R.id.removeButton)
         removeButton.setOnClickListener {
             if(adapter.itemCount == 1){
-                Toast.makeText(applicationContext,text,duration).show()
+                Toast.makeText(applicationContext,"Must provide atleast one service!",Toast.LENGTH_SHORT).show()
             }
             else{
                 receiptList.removeLast()
@@ -139,7 +154,7 @@ class ReceiptCreatorActivity : AppCompatActivity() {
             }
             //Checking for empty fields
             if(checkAll()){
-                Toast.makeText(applicationContext, "Please fill in all fields", duration).show()
+                Toast.makeText(applicationContext, "Please fill in all fields", Toast.LENGTH_SHORT).show()
             }else{
                 //Permission Handling for External Storage
                 if (checkPermissions()){
@@ -156,7 +171,6 @@ class ReceiptCreatorActivity : AppCompatActivity() {
                     }
                 }else{
                     requestPermission()
-                    createButton.performClick()
                 }
             }
         }
@@ -293,13 +307,18 @@ class ReceiptCreatorActivity : AppCompatActivity() {
         pdfDocument.finishPage(myPage)
 
         val file = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS.toString()),"Receipt${curTime}.PDF")
-
         try {
             pdfDocument.writeTo(FileOutputStream(file))
-            Toast.makeText(this,"PDF Generated!",duration).show()
+            Toast.makeText(this,"PDF Generated!",Toast.LENGTH_SHORT).show()
+
+            //uploading to firebase storage
+            var pdfFile = Uri.fromFile(file)
+            uploadFile(pdfFile)
+
+            val path = FileProvider.getUriForFile(this,BuildConfig.APPLICATION_ID + ".provider",file)
+
             val intent = Intent(Intent.ACTION_SEND)
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            val path = FileProvider.getUriForFile(this,BuildConfig.APPLICATION_ID + ".provider",file)
             intent.type = "message/rfc822"
             intent.putExtra(Intent.EXTRA_EMAIL, emailArr)
             intent.putExtra(Intent.EXTRA_SUBJECT, "Service Receipt")
@@ -315,13 +334,32 @@ class ReceiptCreatorActivity : AppCompatActivity() {
                     "${currentUser.firstName}\n" +
                     "${currentUser.businessName}")
             intent.putExtra(Intent.EXTRA_STREAM,path)
+
             startActivity(Intent.createChooser(intent,"Send email..."))
         }catch (e:Exception){
             e.printStackTrace()
-            Toast.makeText(this,"Oops, something went wrong.",duration).show()
+            Toast.makeText(this,"Oops, something went wrong.",Toast.LENGTH_SHORT).show()
         }
 
         pdfDocument.close()
+    }
+
+    private fun uploadFile(pdfFile : Uri){
+        val receiptsRef = storageRef.child("receipts/${pdfFile.lastPathSegment}")
+        val curTime = SimpleDateFormat("MMddyyyy_HHmmss", Locale.getDefault()).format(System.currentTimeMillis())
+        val reference = "gs://uni-projects-85c9d.appspot.com/receipts/Receipt$curTime.PDF"
+
+
+        receiptsRef.putFile(pdfFile)
+            .addOnFailureListener{
+                throw it
+        }.addOnSuccessListener { task ->
+                val currentUserNode = usersNode.child(currentUser.userId.toString())
+                val allReceiptsNode = currentUserNode.child("Receipts")
+                val receiptNode = allReceiptsNode.child(curTime)
+                receiptNode.setValue(reference)
+        }
+
     }
 
     private fun checkPermissions(): Boolean{
@@ -347,7 +385,6 @@ class ReceiptCreatorActivity : AppCompatActivity() {
         )
     }
 
-
     //Permission Handling
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -360,9 +397,9 @@ class ReceiptCreatorActivity : AppCompatActivity() {
             if(grantResults.isNotEmpty()){
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED
                     &&grantResults[1]==PackageManager.PERMISSION_GRANTED){
-                    Toast.makeText(this,"Permission Granted",duration).show()
+                    Toast.makeText(this,"Permission Granted",Toast.LENGTH_SHORT).show()
                 }else{
-                    Toast.makeText(this,"Permission Denied",duration).show()
+                    Toast.makeText(this,"Permission Denied",Toast.LENGTH_SHORT).show()
                 }
             }
         }
