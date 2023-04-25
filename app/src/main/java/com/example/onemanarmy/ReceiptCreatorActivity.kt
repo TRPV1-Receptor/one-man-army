@@ -163,6 +163,7 @@ class ReceiptCreatorActivity : AppCompatActivity() {
                     }
                 }else{
                     requestPermission()
+                    createButton.performClick()
                 }
             }
         }
@@ -183,8 +184,6 @@ class ReceiptCreatorActivity : AppCompatActivity() {
         var email = receiptList.removeLast().serviceProvided
         var name = receiptList.removeLast().serviceProvided
         var emailArr = arrayOf(email)
-
-
 
         val pageHeight = 1120
         val pageWidth = 792
@@ -236,11 +235,11 @@ class ReceiptCreatorActivity : AppCompatActivity() {
         title.color = ContextCompat.getColor(this,R.color.black)
         title.textAlign = Paint.Align.LEFT
 
-        canvas.drawText("Company Name",40F,200F,paint)
-        canvas.drawText("123 Main Street",40F,220F,paint)
+        canvas.drawText(currentUser.businessName.toString(),40F,200F,paint)
+        canvas.drawText(currentUser.businessAddress.toString(),40F,220F,paint)
         canvas.drawText("Greenville, NC 27858",40F,240F,paint)
-        canvas.drawText("(321) 456-7890",40F,260F,paint)
-        canvas.drawText("Email Address",40F,280F,paint)
+        canvas.drawText(currentUser.businessPhone.toString(),40F,260F,paint)
+        canvas.drawText(currentUser.businessEmail.toString(),40F,280F,paint)
         canvas.drawLine(300F,320F,500F,320F,paint)
 
         title.typeface = Typeface.create(Typeface.DEFAULT,Typeface.BOLD)
@@ -249,7 +248,6 @@ class ReceiptCreatorActivity : AppCompatActivity() {
 
         canvas.drawText(name,360F,355F,paint)
         canvas.drawText(email,360F,335F,paint)
-        canvas.drawText("(321) 456-7890",360F,375F,paint)
 
         canvas.drawLine(40F,400F,740F,400F,paint)
         canvas.drawLine(40F,500F,740F,500F,paint)
@@ -301,7 +299,7 @@ class ReceiptCreatorActivity : AppCompatActivity() {
 
         pdfDocument.finishPage(myPage)
 
-        val file = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS.toString()),"Test${curTime}.PDF")
+        val file = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS.toString()),"Receipt${curTime}.PDF")
 
         try {
             pdfDocument.writeTo(FileOutputStream(file))
@@ -314,15 +312,15 @@ class ReceiptCreatorActivity : AppCompatActivity() {
             intent.putExtra(Intent.EXTRA_SUBJECT, "Service Receipt")
             intent.putExtra(Intent.EXTRA_TEXT, "Dear $name,\n" +
                     "\n" +
-                    "Thank you for your recent purchase at [Business Name]. We are writing to confirm that we have sent your receipt to the email address you provided.\n" +
+                    "Thank you for your recent purchase at ${currentUser.businessName}. We are writing to confirm that we have sent your receipt to the email address you provided.\n" +
                     "\n" +
                     "Your receipt is attached to this email as a PDF document. Please note that this is an official record of your transaction, so we recommend that you keep it in a safe place for future reference. If you have any questions or concerns about your receipt or your purchase, please don't hesitate to contact us.\n" +
                     "\n" +
-                    "Once again, thank you for choosing [Business Name]. We look forward to serving you again in the future.\n" +
+                    "Once again, thank you for choosing ${currentUser.businessName}. We look forward to serving you again in the future.\n" +
                     "\n" +
                     "Best regards,\n" +
-                    "[Your Name]\n" +
-                    "[Business Name]")
+                    "${currentUser.firstName}\n" +
+                    "${currentUser.businessName}")
             intent.putExtra(Intent.EXTRA_STREAM,path)
             startActivity(Intent.createChooser(intent,"Send email..."))
         }catch (e:Exception){

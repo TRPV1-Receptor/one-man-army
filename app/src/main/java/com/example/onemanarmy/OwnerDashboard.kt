@@ -89,6 +89,7 @@ class OwnerDashboard : AppCompatActivity() {
         val settingsButton = findViewById<ConstraintLayout>(R.id.settings)
         settingsButton.setOnClickListener {
             val intent = Intent(this, SettingsActivity::class.java,)
+            intent.putExtra("user",loggedIn)
             startActivity(intent)
 
         }
