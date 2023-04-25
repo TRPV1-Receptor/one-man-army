@@ -64,12 +64,6 @@ class LoginFragment : Fragment() {
 
         }
 
-        view.findViewById<Button>(R.id.test).setOnClickListener {
-            requireActivity().run {
-                startActivity(Intent(this,SearchActivity::class.java))
-            }
-
-        }
 
         /**
          *  "Login" button (btn_login) that calls the validateForm function.
@@ -103,13 +97,13 @@ class LoginFragment : Fragment() {
                 password.error = "Please Enter Password"
             }
 
-            username.text.toString().isNotEmpty() &&
-                    password.text.toString().isNotEmpty() ->
+            username.text.toString().isNotEmpty() && password.text.toString().isNotEmpty() ->
             {
                 if(username.text.toString().matches(Regex("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"))) {
                     if (userType == "client"){
                         clientSignIn()
-                    }else{
+                    }
+                    else{
                         ownerSignIn()
                     }
                 }

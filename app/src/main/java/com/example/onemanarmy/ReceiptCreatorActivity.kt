@@ -46,23 +46,19 @@ import java.util.*
 class ReceiptCreatorActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: ReceiptAdapter
-
-    private lateinit var user : List<CharSequence>
-
-    var receiptList = mutableListOf<ReceiptItem>()
-
     private lateinit var bmp:Bitmap
     private lateinit var scaledbmp:Bitmap
 
-    private var PERMISSION_CODE = 101
-
-    val text = "Must provide atleast one service!"
     private val duration = Toast.LENGTH_SHORT
     private val emailRegex = "^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}\$".toRegex()
+    private var PERMISSION_CODE = 101
+
+    var receiptList = mutableListOf<ReceiptItem>()
+    val text = "Must provide atleast one service!"
+
 
     private lateinit var currentUser : OwnerModel
-
-
+    private var db = FirebaseDatabase.getInstance().getReference("Users")
 
     @SuppressLint("ObsoleteSdkInt")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,12 +68,8 @@ class ReceiptCreatorActivity : AppCompatActivity() {
         val userIntent = intent.extras
         currentUser = userIntent?.getSerializable("user") as OwnerModel
 
-       Log.d("UserIntent", currentUser.toString())
-
-
         bmp = BitmapFactory.decodeResource(resources,R.drawable.onemanarmylogo)
         scaledbmp = Bitmap.createScaledBitmap(bmp, 140, 140, false)
-
 
         recyclerView = findViewById(R.id.recyclerView)
         adapter = ReceiptAdapter(mutableListOf(ReceiptItem("",0.0)))
@@ -95,7 +87,7 @@ class ReceiptCreatorActivity : AppCompatActivity() {
 
         val button = findViewById<TextView>(R.id.receipt_button)
         button.setOnClickListener{
-            Toast.makeText(this,user.toString(),Toast.LENGTH_SHORT).show()
+            Toast.makeText(this,currentUser.userId.toString(),Toast.LENGTH_SHORT).show()
         }
 
         //checks if text boxes are empty before adding another one

@@ -45,21 +45,11 @@ class OwnerDashboard : AppCompatActivity() {
                         loggedIn.businessEmail = user["businessEmail"]
                         loggedIn.businessAddress = user["businessAddress"]
                         loggedIn.userName = userEmail
-                        loggedIn.userId = userID
-
+                        loggedIn.userId = user["userId"]
                     }
                 }
                 override fun onCancelled(error: DatabaseError) {}
             })
-
-
-        Log.d("Owner",loggedIn.toString())
-
-
-
-
-
-
 
         val aptButton = findViewById<ConstraintLayout>(R.id.appointments)
         aptButton.setOnClickListener {
@@ -100,7 +90,6 @@ class OwnerDashboard : AppCompatActivity() {
             Toast.makeText(this,loggedIn.toString(),Toast.LENGTH_SHORT).show()
         }
     }
-
 }
 
 
