@@ -1,5 +1,26 @@
 # OneManArmy
 
+## Project Description
+
+One Man Army is a mobile application that allows small business owners to streamline their record-keeping by digitizing receipts and invoices, tracking expenses, and monitoring their finances
+______________________________________________________________
+
+## Development Team
+* Michael Trofimov
+* Eliashazboun
+* Alejandro Cruz-Bautista
+* Anthony Miranda
+* Deidre240
+* ayarbray
+
+## Recent Updates
+* Quick fix for passing the wrong ID through intent
+* Receipts now dynamically populate necessary fields, hotfix on ownderdash
+* Pulling currently logged in user in the dashboard activity and then passing it as an OwnerModel() to all the other activities. Each activity now has access to the info of the currently logged in user 
+* Search implemented 
+* Created a FAQ button with questions and answers for client side 
+* Second registration screen working now, routing to profile setup 
+
 ## Technological Stack:
 
 Kotlin
@@ -8,6 +29,9 @@ Android Studio
 
 FireBase
 
+## Installation
+
+``` git clone https://gitlab.com/cs-department-ecu/csci-4230-spring-2023/section-001/onemanarmy/oneManArmy.git ```
 
 ## Project Setup
 
@@ -66,3 +90,13 @@ Anthony Miranda. GitHub: https://github.com/anthonym553
 Mihail Trofimov. GitHub: https://github.com/Tr0f1k
 Deidre Whitehead. GitHub: https://github.com/DreW3325
 Austin Yarbray. GitHub: https://github.com/ayarbray123
+
+## Contributing
+
+If you would like to contribute to the development of One Man Army, please follow these steps:
+
+1. Fork the repository from GitLab.
+2. Create a new branch for your changes.
+3. Make your changes and commit them to the new branch.
+4. Push the new branch to your forked repository.
+5. Create a pull request to merge your changes into the main branch of the main repository.
