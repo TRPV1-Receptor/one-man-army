@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Useful Tips"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="#6200ee"
+        android:padding="16dp"
+        android:background="@drawable/background_button"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add skills to promote your services or goods when registering your business!"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:padding="16dp"
+        android:textColor="#6200ee" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="At the business register page, add a biography and add relevant skills!"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="16dp"
+        android:textColor="#000000" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#6200ee" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Did you know you could turn dark mode? Here's how!"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:padding="16dp"
+        android:textColor="#6200ee" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="From the dashboard go to Settings > toggle Night Mode to 'ON'"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="16dp"
+        android:textColor="#000000" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#6200ee" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Need help sending a receipt? No worries!"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:padding="16dp"
+        android:textColor="#6200ee" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="From the dashboard tap on Receipt Creator > tap 'Add' > \nNext, provide customer info, service, and service price >\n Hit 'Create' >Choose an email service of your choice > Done!"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="16dp"
+        android:textColor="#000000" />
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#6200ee" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Need to contact us? We're here to help!"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:padding="16dp"
+        android:textColor="#6200ee" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Contact us: help@onemanarmy.com \nToll free: (555)-555-5555"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="16dp"
+        android:textColor="#000000" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#6200ee" />
+
+
+
+</LinearLayout>

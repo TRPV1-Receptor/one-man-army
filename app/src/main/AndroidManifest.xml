@@ -45,6 +45,9 @@
             android:name=".FAQ"
             android:exported="false" />
         <activity
+            android:name=".TIPS"
+            android:exported="false" />
+        <activity
             android:name=".SettingsActivity"
             android:exported="false" />
         <activity

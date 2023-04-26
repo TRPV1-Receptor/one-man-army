@@ -83,10 +83,10 @@ class OwnerDashboard : AppCompatActivity() {
 
         }
 
-        val unknowButton = findViewById<ConstraintLayout>(R.id.unknown)
-        unknowButton.setOnClickListener{
-            Log.d("Owner",loggedIn.toString())
-            Toast.makeText(this,loggedIn.toString(),Toast.LENGTH_SHORT).show()
+        val tipsButton = findViewById<ConstraintLayout>(R.id.unknown)
+        tipsButton.setOnClickListener{
+            val intent = Intent(this,TIPS::class.java)
+            startActivity(intent)
         }
     }
 }
