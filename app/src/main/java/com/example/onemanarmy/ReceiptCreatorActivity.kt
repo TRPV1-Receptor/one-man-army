@@ -97,15 +97,6 @@ class ReceiptCreatorActivity : AppCompatActivity() {
             finish()
         }
 
-        val button = findViewById<TextView>(R.id.receipt_button)
-        button.setOnClickListener{
-            val currentUserNode = usersNode.child(currentUser.userId.toString())
-            val allReceiptsNode = currentUserNode.child("Receipts")
-            val receiptNode = allReceiptsNode.child("dae")
-            receiptNode.setValue("Ho There")
-
-        }
-
         //checks if text boxes are empty before adding another one
         val addButton = findViewById<Button>(R.id.addButton)
         addButton.setOnClickListener {

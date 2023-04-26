@@ -27,18 +27,24 @@ class ReceiptScreenAdapter(private val context: Activity,private val arrayList: 
         return view
 
     }
-
-    fun String.addCharAtIndex(char:Char,index: Int) = StringBuilder(this).apply { insert(index,char) }.toString()
-
     private fun cleanTitle(oldtitle : String) : Pair<String,String> {
         val temp = oldtitle.split("_").toTypedArray()
-        val date = temp[0].addCharAtIndex('-',2)
-        val cleanDate = date.addCharAtIndex('-',5)
+        val date = temp[0]
+        val s1 = date.substring(0,2)
+        val s2 = date.substring(2,4)
+        val s3 = date.substring(4)
 
-        val time = temp[1].addCharAtIndex(':',2)
-        val cleanTime = time.addCharAtIndex(':',5)
+        val cleanDate = "$s1-$s2-$s3"
+
+        val time = temp[1]
+        val t1 = time.substring(0,2)
+        val t2 = time.substring(2,4)
+        val t3 = time.substring(4)
+
+        val cleanTime = "$t1:$t2:$t3"
 
         val result = Pair(cleanDate,cleanTime)
+        //val result = Pair(date,time) For debugging
 
         return result
 

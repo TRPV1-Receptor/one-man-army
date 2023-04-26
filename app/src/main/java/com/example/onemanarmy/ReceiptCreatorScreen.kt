@@ -43,10 +43,12 @@ class ReceiptCreatorScreen : AppCompatActivity() {
                     if (snapshot.exists()){
                         for (child in snapshot.children){
                             val info = Pair(child.key.toString(),child.value.toString())
-                            Log.d("TEST", info.toString())
                             receiptList.add(info)
                         }
-                        setAdapter(receiptList)
+                        if (receiptList.isNotEmpty()){
+                            setAdapter(receiptList)
+                        }
+
                     }
                 }
                 override fun onCancelled(error: DatabaseError) {}
@@ -57,8 +59,6 @@ class ReceiptCreatorScreen : AppCompatActivity() {
             intent.putExtra("user",currentUser)
             startActivity(intent)
         }
-
-
     }
 
     private fun setAdapter(receiptList : ArrayList<Pair<String,String>>){
@@ -76,9 +76,12 @@ class ReceiptCreatorScreen : AppCompatActivity() {
             val ONE_MEGABYTE: Long = 1024 * 1024
 
             gsReference.getBytes(ONE_MEGABYTE).addOnSuccessListener { array ->
+                val intent = Intent(applicationContext,PDFopener::class.java)
+                intent.putExtra("pdf", array)
+                startActivity(intent)
             }
-
-            Toast.makeText(applicationContext,itemClicked.second,Toast.LENGTH_SHORT).show()
         }
     }
 }
+
+
