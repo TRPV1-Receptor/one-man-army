@@ -13,5 +13,5 @@ data class OwnerModel(
     var serviceProvided: String? = null,
     var businessBio: String? = null,
     var businessSkills: String? = null,
-    var profilePic: Int? = null,
+    var profilePic: String? = null,
 ) : java.io.Serializable

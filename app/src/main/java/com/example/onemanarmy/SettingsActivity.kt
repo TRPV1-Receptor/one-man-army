@@ -31,11 +31,10 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         //share preference
         saveData = SaveData(this)
         if (saveData.loadDarkState() == true) {
-            setTheme(R.style.darkTheme)
+            setTheme(R.style.AppTheme)
         } else {
             setTheme(R.style.AppTheme)
         }
@@ -45,46 +44,6 @@ class SettingsActivity : AppCompatActivity() {
         val userIntent = intent.extras
         currentUser = userIntent?.getSerializable("user") as OwnerModel
 
-
-        /////////////This code is for contact form////////////
-
-
-
-//
-// binding = AboutBinding.inflate(layoutInflater)
-//       setContentView(binding.root)
-// binding2 = ActivitySettingsBinding.inflate(layoutInflater)
-//
-//
-//            binding2.Aboutus.setOnClickListener{
-//                binding2 = ActivitySettingsBinding.inflate(layoutInflater)
-//            setContentView(R.layout.about)
-//            val email = binding.emailAddress.text.toString()
-//            val subject = binding.subject.text.toString()
-//            val message = binding.subject.text.toString()
-//
-//            val addresses = email.split(",".toRegex()).toTypedArray()
-//
-//            val intent = Intent(Intent.ACTION_SENDTO).apply {
-//
-//                data = Uri.parse("mailto:")
-//                putExtra(Intent.EXTRA_EMAIL,addresses)
-//                putExtra(Intent.EXTRA_SUBJECT,subject)
-//                putExtra(Intent.EXTRA_TEXT,message)
-//            }
-//            if(intent.resolveActivity(packageManager)!= null){
-//
-//                startActivity(intent)
-//            }else{
-//                Toast.makeText(this,"Required App is not installed", Toast.LENGTH_SHORT).show()
-//            }
-//        }
-
-
-        /////////This code is for contact form^///////////////////////
-
-
-        ///////////////////this code is for image upload
         binding2 = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding2.root)
 
@@ -93,38 +52,15 @@ class SettingsActivity : AppCompatActivity() {
         }
 
 
-        //////////////////////////////Dark Mode
-        switch = findViewById<View>(R.id.switch_btn) as Switch?
-        if (saveData.loadDarkState() == true) {
-            switch?.isChecked = true
-        }
 
-        //on click ON OFf
-        switch = findViewById<View>(R.id.switch_btn) as Switch?
-        if (saveData.loadDarkState() == true) {
-            switch?.isChecked = true
-        }
-        switch!!.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                saveData.setDarkModeState(true)
-                restartApplication()
-            } else {
-                saveData.setDarkModeState(false)
-               restartApplication()
-
-            }
-        }
-        ////////This code is for the back button///////////////
-//        setContentView(R.layout.activity_settings)
         val backBtn = findViewById<ImageView>(R.id.backBtn)
         backBtn.setOnClickListener { finish() }
         ///////////////////////////////////////////
         val secondButton = findViewById<View>(R.id.send_message)
         secondButton.setOnClickListener{
 
-         val Intent = Intent(this,AboutActivity::class.java)
-        startActivity(Intent)
-           //finish()
+            val Intent = Intent(this,AboutActivity::class.java)
+            startActivity(Intent)
         }
 
         ////////////////////////////////////////////

@@ -28,25 +28,25 @@ class AccountActivity : AppCompatActivity() {
         setContentView(binding.root)
 
 
-
+        //For pressing on account
         if(intent.hasExtra("user")){
             val userIntent = intent.extras
             currentUser = userIntent?.getSerializable("user") as OwnerModel
 
-            var profilePic = currentUser.profilePic
-
-            if(profilePic == null){
-                profilePic = R.drawable.profile_icon
-            }
+            var profilePic = currentUser.profilePic?.toInt()
 
             binding.profileName.text = currentUser.firstName
             binding.profilePhone.text = currentUser.businessPhone
             binding.profileBusinessName.text = currentUser.businessName
-            binding.profilePicture.setImageResource(profilePic)
+            if (profilePic == null) {
+                binding.profilePicture.setImageResource(R.drawable.profile_icon)
+            }
             binding.serviceOffered.text = currentUser.serviceProvided
             binding.profileEmail.text = currentUser.businessEmail
             binding.profileAddress.text = currentUser.businessAddress
+            binding.Bio.text = currentUser.businessBio
 
+        //For Search Activity
         }else{
             //grabbng the Information from the intent
             val name = intent.getStringExtra("name")

@@ -78,7 +78,6 @@
                 android:background="@drawable/round_back_secondary_100"
                 android:text="Edit Profile"
                 android:textAllCaps="false"
-                android:textColor="?attr/Text_Color"
                 android:paddingEnd="30dp"
                 android:onClick="edit"
                 />
@@ -119,8 +118,9 @@
                         android:textStyle="bold"
                         android:layout_toEndOf="@+id/nightModeIcon"/>
 
-                    <Switch
+                    <androidx.appcompat.widget.SwitchCompat
                         android:id="@+id/switch_btn"
+                        android:enabled="false"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
@@ -157,6 +157,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
+                        android:enabled="false"
                         android:switchMinWidth="50dp"
                         android:theme="@style/notificationsSwitch"/>
                 </RelativeLayout>
@@ -189,6 +190,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
+                        android:enabled="false"
                         android:layout_centerVertical="true"
                         android:switchMinWidth="50dp"
                         android:theme="@style/privateAccountSwitch"/>
@@ -200,110 +202,6 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:background="@drawable/round_back_white_10_20"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
-                android:layout_marginTop="20dp"
-                android:orientation="vertical"
-                android:padding="15dp">
-                <!--Security Account-->
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <ImageView
-                        android:layout_width="40dp"
-                        android:id="@+id/securityIcon"
-                        android:layout_height="40dp"
-                        android:padding="12dp"
-                        android:background="@drawable/round_background_security"
-                        android:src="@drawable/security" />
-
-                    <TextView
-                        android:layout_marginStart="20dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:text="Security"
-                        android:textColor="@color/black"
-                        android:textStyle="bold"
-                        android:layout_toEndOf="@+id/securityIcon"/>
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/right_arrow_icon"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"/>
-                </RelativeLayout>
-
-                <!--Text Size-->
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <ImageView
-                        android:layout_width="40dp"
-                        android:id="@+id/textSizeIcon"
-                        android:layout_height="40dp"
-                        android:padding="12dp"
-                        android:background="@drawable/round_back_night_mode"
-                        android:src="@drawable/text_size" />
-
-                    <TextView
-                        android:layout_marginStart="20dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:text="Text Size"
-                        android:textColor="@color/black"
-                        android:textStyle="bold"
-                        android:layout_toEndOf="@+id/textSizeIcon"/>
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/right_arrow_icon"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"/>
-
-                </RelativeLayout>
-
-                <!--Language-->
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <ImageView
-                        android:layout_width="40dp"
-                        android:id="@+id/languageIcon"
-                        android:layout_height="40dp"
-                        android:padding="12dp"
-                        android:background="@drawable/round_background_security"
-                        android:src="@drawable/languages" />
-
-                    <TextView
-                        android:layout_marginStart="20dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:text="Languages"
-                        android:textColor="@color/black"
-                        android:textStyle="bold"
-                        android:layout_toEndOf="@+id/languageIcon"/>
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/right_arrow_icon"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"/>
-                </RelativeLayout>
-
-            </LinearLayout>
 
             <LinearLayout
                 android:background="@drawable/round_back_white_10_20"

@@ -169,8 +169,8 @@ class AppointmentActivity : AppCompatActivity(){
 
             builder.setView(popUpView)
 
-            builder.setPositiveButton("Cancel"){dialog, _ ->
-                dialog.dismiss()
+            builder.setPositiveButton("Remove"){dialog, _ ->
+                deleteAppointment(appt)
             }
 
             builder.setNegativeButton("Ok"){dialog, _ ->
@@ -178,6 +178,32 @@ class AppointmentActivity : AppCompatActivity(){
             }
             builder.create().show()
         }
+    }
+
+    private fun deleteAppointment(appt: Appointment) {
+        val currentUserNode = usersNode.child(currentUser.userId.toString())
+        val allAppointmentsNode = currentUserNode.child("Appointments")
+
+        allAppointmentsNode.addListenerForSingleValueEvent(object :ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()){
+                    for (child in snapshot.children){
+                        val key = child.key.toString()
+                        val value = child.value as HashMap<String,String>
+                        if (value["id"] == appt.id){
+                            allAppointmentsNode.child(key).removeValue()
+                            appointmentList.remove(appt)
+
+                            updateData(null)
+                            break
+                        }
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {}
+
+        })
     }
 
 

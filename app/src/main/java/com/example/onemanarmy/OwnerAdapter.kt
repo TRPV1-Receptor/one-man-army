@@ -22,7 +22,7 @@ class OwnerAdapter(private val context: Activity, arrayList: ArrayList<OwnerMode
         val name : TextView = view.findViewById(R.id.person_name)
         val descrip : TextView = view.findViewById(R.id.person_description)
 
-        filteredOwners[position].profilePic?.let { imageView.setImageResource(it) }
+        filteredOwners[position].profilePic?.let { imageView.setImageResource(it.toInt()) }
         name.text = filteredOwners[position].firstName
         descrip.text = filteredOwners[position].serviceProvided
 
