@@ -1,143 +1,166 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ReceiptCreatorActivity">
+    tools:context=".ReceiptCreatorActivity"
+    android:orientation="vertical">
 
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/relativeLayout"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:background="@drawable/activity_bar"
-        tools:ignore="MissingConstraints">
+        android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/back"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:clickable="true"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:padding="14dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="10dp"
+            android:clickable="true"
             android:src="@drawable/back_btn" />
 
         <TextView
             android:id="@+id/receipt_button"
-            android:clickable="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:autofillHints="name"
+            android:layout_width="262dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="0dp"
+            android:layout_marginEnd="0dp"
             android:fontFamily="sans-serif-black"
+            android:gravity="center"
             android:text="Receipt Creator"
             android:textColor="@color/white"
             android:textSize="28sp"
             android:textStyle="bold" />
 
-    </RelativeLayout>
+        <ImageView
+            android:id="@+id/view_receipts"
+            android:layout_width="61dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layout_marginEnd="140dp"
+            android:clickable="true"
+            android:src="@drawable/more" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/customerName"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:layout_marginTop="92dp"
-        android:background="@drawable/custom_input"
-        android:drawableStart="@drawable/name"
-        android:drawablePadding="10dp"
-        android:ems="10"
-        android:hint="Customer Name"
-        android:inputType="text"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.502"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:text="Elias Hazboun"/>
-    <!--Must Remove this After Testing!-->
-    <EditText
-        android:id="@+id/customerEmail"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:layout_marginTop="166dp"
-        android:background="@drawable/custom_input"
-        android:drawableStart="@drawable/email"
-        android:drawablePadding="10dp"
-        android:ems="10"
-        android:hint="Customer Email"
-        android:inputType="textEmailAddress"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:text="hazbounelias96@gmail.com"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Enter customer information here."
+            android:textSize="18sp"
+            android:fontFamily="sans-serif-black"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="center"/>
+        <EditText
+            android:id="@+id/customerName"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/custom_input"
+            android:drawableStart="@drawable/name"
+            android:drawablePadding="10dp"
+            android:layout_gravity="center"
+            android:ems="10"
+            android:hint="Customer Name"
+            android:inputType="text"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp" />
+        <!--Must Remove this After Testing!-->
+        <EditText
+            android:id="@+id/customerEmail"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/custom_input"
+            android:drawableStart="@drawable/email"
+            android:layout_gravity="center"
+            android:drawablePadding="10dp"
+            android:ems="10"
+            android:hint="Customer Email"
+            android:inputType="textEmailAddress"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp" />
+    </LinearLayout>
 
-
-    <Button
-        android:id="@+id/addButton"
+    <View
+        android:layout_width="match_parent"
+        android:layout_marginTop="10dp"
+        android:layout_height="1dp"
+        android:background="@color/Gainsboro" />
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="17dp"
-        android:layout_marginBottom="21dp"
-        android:text="Add"
-        app:layout_constraintBottom_toTopOf="@+id/recyclerView"
-        app:layout_constraintEnd_toStartOf="@+id/guideline"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/customerEmail" />
-
-    <Button
-        android:id="@+id/removeButton"
-        android:layout_width="wrap_content"
+        android:text="Enter services provided below."
+        android:textSize="18dp"
+        android:fontFamily="sans-serif-black"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"/>
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="17dp"
-        android:layout_marginBottom="21dp"
-        android:text="Remove"
-        app:layout_constraintBottom_toTopOf="@+id/recyclerView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline"
-        app:layout_constraintTop_toBottomOf="@+id/customerEmail" />
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/addButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_weight="1"
+            android:layout_marginBottom="21dp"
+            android:text="Add" />
 
-    <Button
-        android:id="@+id/createButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Create"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline2" />
+        <Button
+            android:id="@+id/removeButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginStart="15dp"
+            android:layout_weight="1"
+            android:layout_marginBottom="21dp"
+            android:text="Remove" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="320dp"
-        android:layout_height="163dp"
-        android:clipChildren="false"
-        android:fadeScrollbars="true"
-        android:scrollbarThumbVertical="@dimen/cardview_compat_inset_shadow"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.484"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.589" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_begin="205dp" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_begin="396dp" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipChildren="false"
+            android:padding="10dp"
+            android:fadeScrollbars="true"
+            android:scrollbarThumbVertical="@dimen/cardview_compat_inset_shadow"
+            android:layout_weight="1"/>
+        <Button
+            android:id="@+id/createButton"
+            android:layout_width="match_parent"
+            android:layout_marginEnd="30dp"
+            android:layout_marginStart="30dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="Create" />
+    </LinearLayout>
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+
+
+
+</LinearLayout>

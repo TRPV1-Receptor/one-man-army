@@ -33,6 +33,10 @@ class ReceiptCreatorScreen : AppCompatActivity() {
 
         receiptList = ArrayList()
 
+        binding.backButton.setOnClickListener{
+            finish()
+        }
+
         //Grabbing all the url for receipts from user
         val currentUserNode = usersNode.child(currentUser.userId.toString())
         val currentUserReceiptsNode = currentUserNode.child("Receipts")
@@ -53,12 +57,6 @@ class ReceiptCreatorScreen : AppCompatActivity() {
                 }
                 override fun onCancelled(error: DatabaseError) {}
             })
-
-        binding.addButton.setOnClickListener {
-            val intent = Intent(this, ReceiptCreatorActivity::class.java,)
-            intent.putExtra("user",currentUser)
-            startActivity(intent)
-        }
     }
 
     private fun setAdapter(receiptList : ArrayList<Pair<String,String>>){

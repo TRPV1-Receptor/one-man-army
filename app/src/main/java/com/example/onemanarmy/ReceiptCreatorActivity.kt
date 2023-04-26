@@ -62,32 +62,30 @@ class ReceiptCreatorActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_receipt_creator)
 
-
         //references to storage
         storage = Firebase.storage
         storageRef = storage.reference
 
+        usersNode = FirebaseDatabase.getInstance().getReference("Users")
         //getting current user
         val userIntent = intent.extras
         currentUser = userIntent?.getSerializable("user") as OwnerModel
 
-        Toast.makeText(this,currentUser.firstName.toString(),Toast.LENGTH_SHORT).show()
-
-        usersNode = FirebaseDatabase.getInstance().getReference("Users")
+        //initializing head node in database
 
         receiptList = mutableListOf()
 
-        val emailRegex = "^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}\$".toRegex()
-
-
+        //for pdf generation
         bmp = BitmapFactory.decodeResource(resources,R.drawable.onemanarmylogo)
         scaledbmp = Bitmap.createScaledBitmap(bmp, 140, 140, false)
 
+        //recycler view setup
         recyclerView = findViewById(R.id.recyclerView)
         adapter = ReceiptAdapter(mutableListOf(ReceiptItem("",0.0)))
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this)
 
+        val emailRegex = "^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}\$".toRegex()
         val custName = findViewById<EditText>(R.id.customerName)
         val custEmail = findViewById<EditText>(R.id.customerEmail)
 
@@ -95,6 +93,13 @@ class ReceiptCreatorActivity : AppCompatActivity() {
         val backButton = findViewById<ImageView>(R.id.back)
         backButton.setOnClickListener {
             finish()
+        }
+
+        val showReceiptsButton = findViewById<ImageView>(R.id.view_receipts)
+        showReceiptsButton.setOnClickListener{
+            val intent = Intent(this, ReceiptCreatorScreen::class.java,)
+            intent.putExtra("user",currentUser)
+            startActivity(intent)
         }
 
         //checks if text boxes are empty before adding another one
@@ -158,6 +163,8 @@ class ReceiptCreatorActivity : AppCompatActivity() {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                             savePDF()
                             adapter.clear()
+                            custName.text.clear()
+                            custEmail.text.clear()
                         }
                     }
                 }else{
@@ -339,7 +346,6 @@ class ReceiptCreatorActivity : AppCompatActivity() {
         val receiptsRef = storageRef.child("receipts/${pdfFile.lastPathSegment}")
         val curTime = SimpleDateFormat("MMddyyyy_HHmmss", Locale.getDefault()).format(System.currentTimeMillis())
         val reference = "gs://uni-projects-85c9d.appspot.com/receipts/Receipt$curTime.PDF"
-
 
         receiptsRef.putFile(pdfFile)
             .addOnFailureListener{

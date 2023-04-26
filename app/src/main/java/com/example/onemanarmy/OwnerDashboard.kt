@@ -61,7 +61,7 @@ class OwnerDashboard : AppCompatActivity() {
 
         val receiptButton = findViewById<ConstraintLayout>(R.id.receiptcreator)
         receiptButton.setOnClickListener {
-            val intent = Intent(this, ReceiptCreatorScreen::class.java,)
+            val intent = Intent(this, ReceiptCreatorActivity::class.java,)
             intent.putExtra("user",loggedIn)
             startActivity(intent)
 
