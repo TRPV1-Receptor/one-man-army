@@ -20,6 +20,8 @@ import android.widget.AdapterView.OnItemClickListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
+import java.io.ByteArrayOutputStream
 
 class ProfileSetupActivity : AppCompatActivity(), OnItemClickListener{
 
@@ -38,8 +40,8 @@ class ProfileSetupActivity : AppCompatActivity(), OnItemClickListener{
     private lateinit var selectedSkillsListView: ListView
     private lateinit var saveButton: Button
     //for use of grabbing unique ID
-    private lateinit var userName: String
-    private lateinit var userID: String
+    //private lateinit var userName: String
+    //private lateinit var userID: String
 
     private lateinit var auth: FirebaseAuth
     private lateinit var dbRef: DatabaseReference
@@ -50,10 +52,6 @@ class ProfileSetupActivity : AppCompatActivity(), OnItemClickListener{
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile_setup)
-
-        //grab currently signed in user's email
-        userName = FirebaseAuth.getInstance().currentUser?.email.toString()
-        userID = FirebaseAuth.getInstance().currentUser?.uid.toString()
 
 
         // Find views
@@ -143,20 +141,54 @@ class ProfileSetupActivity : AppCompatActivity(), OnItemClickListener{
         startActivityForResult(intent, REQUEST_IMAGE_CAPTURE)
     }
 
+    private fun saveProfileImage() {
+
+    }
+
 
     private fun saveProfile() {
+
+        //grab currently signed in user's email
+        var userName = FirebaseAuth.getInstance().currentUser?.email.toString()
+        var userID = FirebaseAuth.getInstance().currentUser?.uid.toString()
+
+        // Firebase Storage reference
+        val storageRef = Firebase.storage.reference
+
+        // Biography string to use
         val bio = bioEditText.text.toString()
+
         // Save profile picture and selected skills to user account
         val profilePicture = (profilePictureImageView.drawable as BitmapDrawable).bitmap // get the user's selected profile picture
+
         val selectedSkills = selectedSkillsList // get the user's selected skills
 
+        //Obtain UserId by using userName to reverse locate through database and then proceed to store info under proper user
         getUidFromUserName(userName) { uid ->
             if (uid != null) {
+
                 // Handle the uid value
                 val userAccountRef = FirebaseDatabase.getInstance().getReference("Users").child(uid)
 
+                // Store biography to user account
                 val bioRef = userAccountRef.child("Biography")
                 bioRef.setValue(bio)
+
+                // Save the profile picture to Firebase Storage
+                val profilePicturesRef = storageRef.child("images/${userID}.jpg")
+                val profilePictureStream = ByteArrayOutputStream()
+                profilePicture.compress(Bitmap.CompressFormat.JPEG, 100, profilePictureStream)
+                val uploadTask = profilePicturesRef.putBytes(profilePictureStream.toByteArray())
+
+                uploadTask.addOnSuccessListener {
+                    profilePicturesRef.downloadUrl.addOnSuccessListener { uri ->
+                        // Save the download URL to the user's account node as a child node "profilePicture"
+                        userAccountRef.child("profilePicture").setValue(uri.toString())
+                        Toast.makeText(this, "Profile picture successfully uploaded", Toast.LENGTH_SHORT).show()
+                    }
+                }.addOnFailureListener{
+                    Toast.makeText(this, "Failed to upload profile picture", Toast.LENGTH_SHORT).show()
+                }
 
                 // Save the selected skills under the "Skills" field of the user's account node
                 val skillsRef = userAccountRef.child("Skills")
@@ -178,6 +210,9 @@ class ProfileSetupActivity : AppCompatActivity(), OnItemClickListener{
         finish()
     }
 
+    /*
+    Function to obtain Uid by using userName and returning Uid as a usable variable within lambda expression
+     */
     private fun getUidFromUserName(userName: String, callback: (String?) -> Unit) {
         val usersRef = FirebaseDatabase.getInstance().getReference("Users")
 
