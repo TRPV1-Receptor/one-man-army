@@ -8,14 +8,15 @@
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:text="Useful Tips"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:gravity="center"
         android:textStyle="bold"
-        android:textColor="#6200ee"
-        android:padding="16dp"
-        android:background="@drawable/background_button"/>
+        android:textColor="@color/white"
+        android:textSize="28sp"
+        android:fontFamily="sans-serif-black"
+        android:background="@drawable/activity_bar"/>
 
     <TextView
         android:layout_width="match_parent"
@@ -29,28 +30,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="At the business register page, add a biography and add relevant skills!"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:paddingBottom="16dp"
-        android:textColor="#000000" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#6200ee" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Did you know you could turn dark mode? Here's how!"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:padding="16dp"
-        android:textColor="#6200ee" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="From the dashboard go to Settings > toggle Night Mode to 'ON'"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:paddingBottom="16dp"
