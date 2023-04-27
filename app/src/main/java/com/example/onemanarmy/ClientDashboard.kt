@@ -22,5 +22,6 @@ class ClientDashboard : AppCompatActivity() {
             val intent = Intent(this,FAQ::class.java)
             startActivity(intent)
         }
+
     }
 }

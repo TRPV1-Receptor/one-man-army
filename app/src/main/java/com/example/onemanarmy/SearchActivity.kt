@@ -44,6 +44,7 @@ class SearchActivity : AppCompatActivity() {
         val busName = ArrayList<String>()
         val email = ArrayList<String>()
         val address = ArrayList<String>()
+        val profilePic = ArrayList<String>()
 
 
         //Pulling all accounts from database that are owners
@@ -63,12 +64,14 @@ class SearchActivity : AppCompatActivity() {
                         busName.add(owner["businessName"].toString())
                         email.add(owner["businessEmail"].toString())
                         address.add(owner["businessAddress"].toString())
+                        owner["profilePicture"]?.let { profilePic.add(it) }
                     }
                     for(i in name.indices){
                         val user = OwnerModel()
                         Log.d("For Loop", name[i])
                         user.firstName = name[i]
                         user.serviceProvided = service[i]
+                        user.profilePicture = profilePic[i]
                         userArrayList.add(user)
                     }
 
@@ -78,16 +81,8 @@ class SearchActivity : AppCompatActivity() {
 
         val adapter = OwnerAdapter(this,userArrayList)
 
-
-        val testAdapter : ArrayAdapter<String> = ArrayAdapter(
-            this,
-            android.R.layout.simple_list_item_1,
-            name
-        )
-
         binding.searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(query: String?): Boolean {
-
                 return false
             }
 
@@ -97,7 +92,10 @@ class SearchActivity : AppCompatActivity() {
                     if (owner["firstName"].toString().lowercase().contains(newText?.lowercase().toString()) || owner["serviceProvided"].toString().lowercase()
                             .contains(newText?.lowercase().toString())
                     ){
-                        filteredList.add(OwnerModel(firstName = owner["firstName"], serviceProvided = owner["serviceProvided"]))
+                        filteredList.add(OwnerModel(
+                            firstName = owner["firstName"],
+                            serviceProvided = owner["serviceProvided"],
+                            profilePicture = owner["profilePicture"]))
                     }
                 }
                 adapter.update(filteredList)
@@ -128,6 +126,8 @@ class SearchActivity : AppCompatActivity() {
                     user.serviceProvided = owner["serviceProvided"]
                     user.businessEmail = owner["businessEmail"]
                     user.businessAddress = owner["businessAddress"]
+                    user.profilePicture = owner["profilePicture"]
+                    user.businessBio = owner["Biography"]
 
                 }
             }
@@ -140,6 +140,8 @@ class SearchActivity : AppCompatActivity() {
             intent.putExtra("service",user.serviceProvided.toString())
             intent.putExtra("email",user.businessEmail.toString())
             intent.putExtra("address",user.businessAddress.toString())
+            intent.putExtra("profile",user.profilePicture.toString())
+            intent.putExtra("bio",user.businessBio.toString())
 
             startActivity(intent)
         }

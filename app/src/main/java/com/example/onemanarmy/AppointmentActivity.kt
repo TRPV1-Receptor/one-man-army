@@ -52,6 +52,7 @@ class AppointmentActivity : AppCompatActivity(){
         date = CalendarDay.today()
         calendar.selectedDate = date
 
+
         //Initializing the adapter and the layout manager
         adapter = AppointmentAdapter(mutableListOf(Appointment()))
         recyclerView.adapter = adapter
@@ -145,6 +146,8 @@ class AppointmentActivity : AppCompatActivity(){
                             it
                         )
                     })
+                }else{
+                    Toast.makeText(this,"Invalid entry,try again.",Toast.LENGTH_SHORT).show()
                 }
             }
             builder.create().show()
@@ -171,6 +174,7 @@ class AppointmentActivity : AppCompatActivity(){
 
             builder.setPositiveButton("Remove"){dialog, _ ->
                 deleteAppointment(appt)
+                calendar.selectedDate = date
             }
 
             builder.setNegativeButton("Ok"){dialog, _ ->
@@ -184,6 +188,7 @@ class AppointmentActivity : AppCompatActivity(){
         val currentUserNode = usersNode.child(currentUser.userId.toString())
         val allAppointmentsNode = currentUserNode.child("Appointments")
 
+
         allAppointmentsNode.addListenerForSingleValueEvent(object :ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()){
@@ -193,8 +198,18 @@ class AppointmentActivity : AppCompatActivity(){
                         if (value["id"] == appt.id){
                             allAppointmentsNode.child(key).removeValue()
                             appointmentList.remove(appt)
-
+                            calendar.removeDecorators()
                             updateData(null)
+                            appointmentList.forEach{appointment ->
+                                updateData(appointment.date)
+                                calendar.addDecorators(appointment.date?.let {
+                                    CurrentDayDecorator(
+                                        this@AppointmentActivity,
+                                        it
+                                    )
+                                })
+                            }
+
                             break
                         }
                     }
