@@ -72,10 +72,6 @@ On the "Receipt Creator" page, the business owner can create receipts for the or
 
 On the "Search" page, the client can look for the service providers; from there, they can access their profiles to make an appointment. The filter used for the search is the business owner's name.
 
-On the "Settings" page, the user can change the color of the app to a dark theme, contact the project's creators, read through the frequently asked questions, and send us an e-mail regarding any issues related to the app.
-
-Also, there is an option to change between client and business owner accounts by pressing the "Private Account" button.
-
 
 ## Issues:
 
@@ -84,12 +80,12 @@ Also, there is an option to change between client and business owner accounts by
 
 ## Contributors:
 
-Alejandro Cruz-Batista. GitHub: https://github.com/itsAlex58
-Elias Hazboun. GitHub: 
-Anthony Miranda. GitHub: https://github.com/anthonym553
-Mihail Trofimov. GitHub: https://github.com/Tr0f1k
-Deidre Whitehead. GitHub: https://github.com/DreW3325
-Austin Yarbray. GitHub: https://github.com/ayarbray123
+* Alejandro Cruz-Batista. GitHub: https://github.com/itsAlex58
+* Elias Hazboun. GitHub: 
+* Anthony Miranda. GitHub: https://github.com/anthonym553
+* Mihail Trofimov. GitHub: https://github.com/Tr0f1k
+* Deidre Whitehead. GitHub: https://github.com/DreW3325
+* Austin Yarbray. GitHub: https://github.com/ayarbray123
 
 ## Contributing
 
