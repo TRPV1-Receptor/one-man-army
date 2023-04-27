@@ -356,7 +356,6 @@ class ReceiptCreatorActivity : AppCompatActivity() {
                 val receiptNode = allReceiptsNode.child(curTime)
                 receiptNode.setValue(reference)
         }
-
     }
 
     private fun checkPermissions(): Boolean{

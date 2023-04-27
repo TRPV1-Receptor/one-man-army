@@ -63,6 +63,7 @@ class AccountActivity : AppCompatActivity() {
             binding.serviceOffered.text = currentUser.serviceProvided
             binding.profileEmail.text = currentUser.businessEmail
             binding.profileAddress.text = currentUser.businessAddress
+            binding.Bio.text = currentUser.businessBio
         }else{
             //grabbing the Information from the intent
             val name = intent.getStringExtra("name")

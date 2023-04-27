@@ -46,6 +46,7 @@ class OwnerDashboard : AppCompatActivity() {
                         loggedIn.userName = userEmail
                         loggedIn.userId = user["userId"]
                         loggedIn.profilePicture = user["profilePicture"]
+                        loggedIn.businessBio = user["Biography"]
                     }
                 }
                 override fun onCancelled(error: DatabaseError) {}

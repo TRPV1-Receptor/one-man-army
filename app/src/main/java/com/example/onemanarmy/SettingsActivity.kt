@@ -13,11 +13,12 @@ import android.widget.Toast
 import com.example.onemanarmy.databinding.AboutBinding
 import com.example.onemanarmy.databinding.ActivityMainBinding
 import com.example.onemanarmy.databinding.ActivitySettingsBinding
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.ktx.Firebase
 
 
 class SettingsActivity : AppCompatActivity() {
 
-    private var switch: Switch? = null
     private lateinit var saveData: SaveData
     private lateinit var binding: AboutBinding
     private lateinit var binding2: ActivitySettingsBinding
@@ -48,7 +49,11 @@ class SettingsActivity : AppCompatActivity() {
         setContentView(binding2.root)
 
         binding2.pickImageButton.setOnClickListener {
-            pickImageFromGallery()
+            val intent = Intent(this,MainActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+            FirebaseAuth.getInstance().signOut()
+            startActivity(intent)
+
         }
 
 

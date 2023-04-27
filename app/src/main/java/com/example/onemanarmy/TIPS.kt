@@ -9,8 +9,4 @@ class TIPS : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tips)
     }
-    public final fun showTIPS(view: View) {
-        val intent = Intent(this, TIPS::class.java)
-        startActivity(intent)
-    }
 }

@@ -76,10 +76,9 @@
                 android:paddingStart="30dp"
                 android:layout_gravity="center"
                 android:background="@drawable/round_back_secondary_100"
-                android:text="Edit Profile"
+                android:text="Log Out"
                 android:textAllCaps="false"
                 android:paddingEnd="30dp"
-                android:onClick="edit"
                 />
 
 
