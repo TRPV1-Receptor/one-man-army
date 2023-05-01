@@ -73,6 +73,7 @@ class SearchActivity : AppCompatActivity() {
                         user.serviceProvided = service[i]
                         user.profilePicture = profilePic[i]
                         userArrayList.add(user)
+                        //TODO profile picture bug, when user does not have it set default
                     }
 
                 }
